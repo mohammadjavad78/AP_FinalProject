@@ -27,7 +27,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QFrame" name="frame_2">
+          <widget class="QFrame" name="frames">
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
@@ -36,13 +36,13 @@
            </property>
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="0" column="0">
-             <widget class="QGraphicsView" name="graphicsView"/>
+             <layout class="QVBoxLayout" name="vertical"/>
             </item>
            </layout>
           </widget>
          </item>
          <item>
-          <widget class="QSlider" name="horizontalSlider">
+          <widget class="QSlider" name="sliderfilm">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -70,7 +70,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_4">
+            <widget class="QPushButton" name="open">
              <property name="text">
               <string>Open</string>
              </property>
@@ -84,7 +84,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="play">
              <property name="text">
               <string>Start</string>
              </property>
@@ -98,7 +98,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_5">
+            <widget class="QPushButton" name="stop">
              <property name="text">
               <string>Stop</string>
              </property>
@@ -121,7 +121,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QSlider" name="horizontalSlider_2">
+            <widget class="QSlider" name="volume">
              <property name="enabled">
               <bool>true</bool>
              </property>
