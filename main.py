@@ -2,6 +2,7 @@ import os
 import sys
 from dateutil.parser import parse
 import pandas as pd
+from datetime import datetime
 from PyQt5 import uic, QtCore, QtWidgets
 from PyQt5.QtWidgets import (
     QApplication,
@@ -30,10 +31,13 @@ class LoginPage(QDialog):
         firstline = pd.DataFrame(data, index=[0])
         if self.tableWidget.currentRow() == 0:
             dt = parse(str(list(firstline)[1]))
-            print(dt.time())
+            t = str(list(firstline)[1])
         else:
             dt = parse(str(data.iat[self.tableWidget.currentRow(), 1]))
-            print(dt.time())
+            t = str(data.iat[self.tableWidget.currentRow(), 1])
+        pt = datetime.strptime(t, "%H:%M:%S")
+        total_seconds = pt.second + pt.minute * 60 + pt.hour * 3600
+        print(total_seconds)
 
 
 class IntroWindow(QMainWindow, Form):
