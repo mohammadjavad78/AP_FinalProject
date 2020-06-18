@@ -13,7 +13,7 @@
     <x>0</x>
     <y>0</y>
     <width>379</width>
-    <height>641</height>
+    <height>663</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -67,9 +67,27 @@
        <property name="statusTip">
         <string/>
        </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="defaultDropAction">
+        <enum>Qt::IgnoreAction</enum>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
        <property name="columnCount">
         <number>2</number>
        </property>
+       <attribute name="horizontalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
        <column/>
        <column/>
       </widget>

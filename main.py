@@ -1,5 +1,6 @@
 import os
 import sys
+import pandas as pd
 from PyQt5 import uic, QtCore, QtWidgets
 from PyQt5.QtWidgets import (
     QApplication,
@@ -62,9 +63,23 @@ class IntroWindow(QMainWindow, Form):
     def opensecond(self):
         login_page = LoginPage()
         login_page.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
-        login_page.tableWidget.setRowCount(2)
+        data = pd.read_excel("tags.xlsx")
+        firstline = pd.DataFrame(data, index=[0])
+        # print(list(firstline)[0])
+        x = pd.DataFrame(data, columns=[list(firstline)[0]])
+        login_page.tableWidget.setRowCount(x.size)
         login_page.tableWidget.insertRow(1)
-        login_page.tableWidget.setItem(1, 1, QtWidgets.QTableWidgetItem(str("salam")))
+        login_page.tableWidget.setItem(
+            0, 0, QtWidgets.QTableWidgetItem(list(firstline)[0])
+        )
+        login_page.tableWidget.setItem(
+            0, 1, QtWidgets.QTableWidgetItem(list(firstline)[1])
+        )
+        for i in range(x.size):
+            for j in range(2):
+                login_page.tableWidget.setItem(
+                    i + 1, j, QtWidgets.QTableWidgetItem(str(data.iat[i, j]))
+                )
         login_page.exec_()
 
     ##setting position of film
