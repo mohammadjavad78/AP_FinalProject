@@ -82,11 +82,16 @@ class IntroWindow(QMainWindow, Form):
                 )
         login_page.exec_()
 
+    def gototime(self, hour, min, sec):
+        position = (hour * 3600 + min * 60 + sec) * 1000
+        self.videoplayer.setPosition(position)
+
     ##setting position of film
     def setpos(self, position):
         self.videoplayer.setPosition(position)
 
     def position(self, position):
+        print(position)
         self.sliderfilm.setValue(position)
 
     def changed(self, duration):
