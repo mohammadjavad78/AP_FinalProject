@@ -26,7 +26,7 @@ class LoginPage(QDialog):
         super(LoginPage, self).__init__()
         loadUi("searchtag.ui", self)
 
-    def shows(self):
+    def shows(self, layout):
         data = pd.read_excel("tags.xlsx")
         firstline = pd.DataFrame(data, index=[0])
         if self.tableWidget.currentRow() == 0:
@@ -37,7 +37,7 @@ class LoginPage(QDialog):
             t = str(data.iat[self.tableWidget.currentRow(), 1])
         pt = datetime.strptime(t, "%H:%M:%S")
         total_seconds = pt.second + pt.minute * 60 + pt.hour * 3600
-        print(total_seconds)
+        layout.videoplayer.setPosition(total_seconds * 1000)
 
 
 class IntroWindow(QMainWindow, Form):
@@ -71,9 +71,15 @@ class IntroWindow(QMainWindow, Form):
         self.volume.sliderMoved.connect(self.setvolpos)
         self.actionOpen.triggered.connect(self.Loadvideo)
         self.actionSearch_By_Tag.triggered.connect(self.opensecond)
+        # self.skipforward.clicked.connect(self.skipforwa)
+        # self.skipback.clicked.connect(self.skipbac)
         self.play.clicked.connect(self.play_video)
         self.open.clicked.connect(lambda: self.Loadvideo(self.videoplayer))
         self.stop.clicked.connect(self.stopp)
+
+    # def skipforwa(self):
+
+    # def skipbac(self):
 
     def opensecond(self):
         login_page = LoginPage()
@@ -94,20 +100,25 @@ class IntroWindow(QMainWindow, Form):
                 login_page.tableWidget.setItem(
                     i + 1, j, QtWidgets.QTableWidgetItem(str(data.iat[i, j]))
                 )
-        login_page.buttonBox.accepted.connect(login_page.shows)
+        login_page.buttonBox.accepted.connect(lambda: login_page.shows(self))
         login_page.tableWidget.setHorizontalHeaderLabels(["Tag", "Time"])
         login_page.exec_()
-
-    def gototime(self, hour, min, sec):
-        position = (hour * 3600 + min * 60 + sec) * 1000
-        self.videoplayer.setPosition(position)
 
     ##setting position of film
     def setpos(self, position):
         self.videoplayer.setPosition(position)
 
     def position(self, position):
-        print(position)
+        hour = int((position / 3600000) % 24)
+        if hour < 10:
+            hour = "0" + str(hour)
+        minute = int((position / 60000) % 60)
+        if minute < 10:
+            minute = "0" + str(minute)
+        second = int((position / 1000) % 60)
+        if second < 10:
+            second = "0" + str(second)
+        self.label.setText(f"{hour}:{minute}:{second}")
         self.sliderfilm.setValue(position)
 
     def changed(self, duration):
