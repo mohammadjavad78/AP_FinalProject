@@ -71,11 +71,33 @@ class IntroWindow(QMainWindow, Form):
         self.volume.sliderMoved.connect(self.setvolpos)
         self.actionOpen.triggered.connect(self.Loadvideo)
         self.actionSearch_By_Tag.triggered.connect(self.opensecond)
+        self.actionFullscreen.triggered.connect(self.screen)
         # self.skipforward.clicked.connect(self.skipforwa)
         # self.skipback.clicked.connect(self.skipbac)
         self.play.clicked.connect(self.play_video)
         self.open.clicked.connect(lambda: self.Loadvideo(self.videoplayer))
         self.stop.clicked.connect(self.stopp)
+        ####how to hid window flag
+        # self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
+        # self.hide()
+        # self.show()
+
+    def mouseDoubleClickEvent(self, cls):
+        if not self.isFullScreen():
+            self.showFullScreen()
+        else:
+            self.showNormal()
+
+    def keyPressEvent(self, e):
+        if e.key() == Qt.Key_Escape:
+            if self.isFullScreen():
+                self.showNormal()
+
+    def screen(self):
+        if not self.isFullScreen():
+            self.showFullScreen()
+        else:
+            self.showNormal()
 
     # def skipforwa(self):
 

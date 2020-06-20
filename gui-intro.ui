@@ -72,7 +72,7 @@
            <item>
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>             </string>
+              <string/>
              </property>
             </widget>
            </item>
@@ -167,6 +167,7 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionSearch_By_Tag"/>
+    <addaction name="actionFullscreen"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -179,6 +180,11 @@
   <action name="actionSearch_By_Tag">
    <property name="text">
     <string>Search By Tag</string>
+   </property>
+  </action>
+  <action name="actionFullscreen">
+   <property name="text">
+    <string>Fullscreen/normalscreen</string>
    </property>
   </action>
  </widget>
