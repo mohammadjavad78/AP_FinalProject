@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (
     QDialog,
     QMainWindow,
     QFileDialog,
+    QStyle,
 )  # , QHBoxLayout, QVBoxLayout
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtGui import QIcon, QPalette, QImage
@@ -62,7 +63,18 @@ class IntroWindow(QMainWindow, Form):
         self.volume.setValue(100)
 
         self.play.setEnabled(False)
-        self.stop.setEnabled(False)
+        self.increaseRate.setEnabled(False)
+        self.decreaseRate.setEnabled(False)
+
+        #putting Icons on buttons
+
+        self.increaseRate.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekForward))
+        self.decreaseRate.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekBackward))
+        self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        self.open.setIcon(self.style().standardIcon(QStyle.SP_DirHomeIcon))
+        self.skipforward.setIcon(self.style().standardIcon(QStyle.SP_MediaSkipForward))
+        self.skipback.setIcon(self.style().standardIcon(QStyle.SP_MediaSkipBackward))
+
 
         self.sliderfilm.sliderMoved.connect(self.setpos)
         self.videoplayer.positionChanged.connect(self.position)
@@ -72,11 +84,12 @@ class IntroWindow(QMainWindow, Form):
         self.actionOpen.triggered.connect(self.Loadvideo)
         self.actionSearch_By_Tag.triggered.connect(self.opensecond)
         self.actionFullscreen.triggered.connect(self.screen)
-        # self.skipforward.clicked.connect(self.skipforwa)
-        # self.skipback.clicked.connect(self.skipbac)
+        self.skipforward.clicked.connect(self.skipforw)
+        self.skipback.clicked.connect(self.skipbac)
+        self.increaseRate.clicked.connect(self.incRate)
+        self.decreaseRate.clicked.connect(self.decRate)
         self.play.clicked.connect(self.play_video)
         self.open.clicked.connect(lambda: self.Loadvideo(self.videoplayer))
-        self.stop.clicked.connect(self.stopp)
         ####how to hid window flag
         # self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         # self.hide()
@@ -99,9 +112,28 @@ class IntroWindow(QMainWindow, Form):
         else:
             self.showNormal()
 
-    # def skipforwa(self):
+    #forward media 5s
+    def skipforw(self):
+        self.videoplayer.setPosition(self.videoplayer.position()+5000)
+    def skipbac(self):
+        self.videoplayer.setPosition(self.videoplayer.position()-5000)
 
-    # def skipbac(self):
+         #set increase rate
+    def incRate(self):
+        if self.videoplayer.playbackRate() == 0:
+            x = self.videoplayer.playbackRate() + 1
+        else:
+            x = self.videoplayer.playbackRate()
+        self.videoplayer.setPlaybackRate(x+.25)
+    
+
+    #set decrease rate
+    def decRate(self):
+        if self.videoplayer.playbackRate() == 0:
+            x = self.videoplayer.playbackRate() + 1
+        else:
+            x = self.videoplayer.playbackRate()
+        self.videoplayer.setPlaybackRate(x-.25)
 
     def opensecond(self):
         login_page = LoginPage()
@@ -151,11 +183,11 @@ class IntroWindow(QMainWindow, Form):
         self.videoplayer.setVolume(position)
 
     ##stop button
-    def stopp(self):
-        self.stop.setEnabled(False)
-        self.play.setText("Start")
-        self.videoplayer.stop()
-        self.videoplayer.setPosition(0)
+    # def stopp(self):
+    #     self.stop.setEnabled(False)
+    #     self.play.setText("Start")
+    #     self.videoplayer.stop()
+    #     self.videoplayer.setPosition(0)
 
     ##open button or open from menu bar
     def Loadvideo(self, videoplayer):
@@ -169,19 +201,18 @@ class IntroWindow(QMainWindow, Form):
                         QMediaContent(QUrl.fromLocalFile(filename))
                     )
                     self.videoplayer.play()
-                    self.stop.setEnabled(True)
                     self.play.setEnabled(True)
-                    self.play.setText("Pause")
+                    self.increaseRate.setEnabled(True)
+                    self.decreaseRate.setEnabled(True)
 
     ##play button
     def play_video(self):
-        self.stop.setEnabled(True)
         if self.videoplayer.state() == QMediaPlayer.PlayingState:
-            self.play.setText("Resume")
+            self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
             self.videoplayer.pause()
         else:
             self.videoplayer.play()
-            self.play.setText("Pause")
+            self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
 
 if __name__ == "__main__":
