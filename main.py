@@ -202,6 +202,7 @@ class IntroWindow(QMainWindow, Form):
                     )
                     self.videoplayer.play()
                     self.play.setEnabled(True)
+                    self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
                     self.increaseRate.setEnabled(True)
                     self.decreaseRate.setEnabled(True)
 
