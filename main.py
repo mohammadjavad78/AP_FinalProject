@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (
     QFrame,
     QDialog,
     QMainWindow,
+    QPushButton,
     QFileDialog,
     QStyle,
 )  # , QHBoxLayout, QVBoxLayout
@@ -35,7 +36,7 @@ class LoginPage(QDialog):
             t = str(list(firstline)[1])
         else:
             dt = parse(str(data.iat[self.tableWidget.currentRow(), 1]))
-            t = str(data.iat[self.tableWidget.currentRow(), 1])
+            t = str(data.iat[self.tableWidget.currentRow() - 1, 1])
         pt = datetime.strptime(t, "%H:%M:%S")
         total_seconds = pt.second + pt.minute * 60 + pt.hour * 3600
         layout.videoplayer.setPosition(total_seconds * 1000)
@@ -53,6 +54,7 @@ class IntroWindow(QMainWindow, Form):
 
         self.setupUi(self)
 
+        self.a = 1
         videowidget = QVideoWidget()
         self.vertical.addWidget(videowidget)
         self.videoplayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
@@ -66,15 +68,16 @@ class IntroWindow(QMainWindow, Form):
         self.increaseRate.setEnabled(False)
         self.decreaseRate.setEnabled(False)
 
-        #putting Icons on buttons
+        # putting Icons on buttons
 
         self.increaseRate.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekForward))
-        self.decreaseRate.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekBackward))
+        self.decreaseRate.setIcon(
+            self.style().standardIcon(QStyle.SP_MediaSeekBackward)
+        )
         self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self.open.setIcon(self.style().standardIcon(QStyle.SP_DirHomeIcon))
         self.skipforward.setIcon(self.style().standardIcon(QStyle.SP_MediaSkipForward))
         self.skipback.setIcon(self.style().standardIcon(QStyle.SP_MediaSkipBackward))
-
 
         self.sliderfilm.sliderMoved.connect(self.setpos)
         self.videoplayer.positionChanged.connect(self.position)
@@ -90,50 +93,97 @@ class IntroWindow(QMainWindow, Form):
         self.decreaseRate.clicked.connect(self.decRate)
         self.play.clicked.connect(self.play_video)
         self.open.clicked.connect(lambda: self.Loadvideo(self.videoplayer))
+        self.listView.hide()
+        self.addtolist()
+        self.listviewstatus = 0
+        self.listbtn.clicked.connect(lambda: self.list())
+        self.listView.itemClicked.connect(self.listwidgetclicked)
+
+        # def itemClicked(item):
+        #     print("sassss")
+
+        # self.button = QPushButton("button", self)
         ####how to hid window flag
         # self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         # self.hide()
         # self.show()
 
+    def listwidgetclicked(self, item):
+        t = item.text()
+        pt = datetime.strptime(t, "%H:%M:%S")
+        total_seconds = pt.second + pt.minute * 60 + pt.hour * 3600
+        if self.a == 0:
+            self.videoplayer.setPosition(total_seconds * 1000)
+
+    def list(self):
+        if self.listviewstatus % 2 == 1:
+            self.listView.hide()
+            self.listbtn.setText("^")
+            self.listviewstatus += 1
+        else:
+            self.listbtn.setText("v")
+            self.listviewstatus += 1
+            self.listView.show()
+
+    # def resizeEvent(self, cls):
+    #     print(self.geometry())
+    #     width = self.frameGeometry().width()
+    #     height = self.frameGeometry().height()
+    #     self.button.move(width - 200, height - 200)
+
     def mouseDoubleClickEvent(self, cls):
         if not self.isFullScreen():
-            self.showFullScreen()
+            # self.showFullScreen()
+            self.fulls()
         else:
-            self.showNormal()
+            self.unfull()
+            # self.showNormal()
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
             if self.isFullScreen():
-                self.showNormal()
+                self.unfull()
+                # self.showNormal()
 
     def screen(self):
         if not self.isFullScreen():
-            self.showFullScreen()
+            # self.showFullScreen()
+            self.fulls()
         else:
-            self.showNormal()
+            self.unfull()
+            # self.showNormal()
 
-    #forward media 5s
+    # forward media 5s
     def skipforw(self):
-        self.videoplayer.setPosition(self.videoplayer.position()+5000)
-    def skipbac(self):
-        self.videoplayer.setPosition(self.videoplayer.position()-5000)
+        self.videoplayer.setPosition(self.videoplayer.position() + 5000)
 
-         #set increase rate
+    def skipbac(self):
+        self.videoplayer.setPosition(self.videoplayer.position() - 5000)
+
+        # set increase rate
+
     def incRate(self):
         if self.videoplayer.playbackRate() == 0:
             x = self.videoplayer.playbackRate() + 1
         else:
             x = self.videoplayer.playbackRate()
-        self.videoplayer.setPlaybackRate(x+.25)
-    
+        self.videoplayer.setPlaybackRate(x + 0.25)
 
-    #set decrease rate
+    # set decrease rate
     def decRate(self):
         if self.videoplayer.playbackRate() == 0:
             x = self.videoplayer.playbackRate() + 1
         else:
             x = self.videoplayer.playbackRate()
-        self.videoplayer.setPlaybackRate(x-.25)
+        self.videoplayer.setPlaybackRate(x - 0.25)
+
+    def addtolist(self):
+        data = pd.read_excel("tags.xlsx")
+        firstline = pd.DataFrame(data, index=[0])
+        x = pd.DataFrame(data, columns=[list(firstline)[0]])
+        self.listView.addItem(str(list(firstline)[1]))
+        for i in range(x.size):
+            self.listView.addItem(str(data.iat[i, 1]))
 
     def opensecond(self):
         login_page = LoginPage()
@@ -154,9 +204,50 @@ class IntroWindow(QMainWindow, Form):
                 login_page.tableWidget.setItem(
                     i + 1, j, QtWidgets.QTableWidgetItem(str(data.iat[i, j]))
                 )
+            # self.listView.addItem(str(data.iat[i, j]))
         login_page.buttonBox.accepted.connect(lambda: login_page.shows(self))
         login_page.tableWidget.setHorizontalHeaderLabels(["Tag", "Time"])
         login_page.exec_()
+
+    def fulls(self):
+        self.decreaseRate.hide()
+        self.increaseRate.hide()
+        self.centralwidget.setContentsMargins(0, 0, 0, 0)
+        self.play.hide()  ################################################
+        # self.stop.hide()  ################################################
+        self.open.hide()  ################################################
+        self.skipforward.hide()  ################################################
+        self.skipback.hide()  ################################################
+        # self.horizontalSpacer_2.hide()
+        # self.horizontalSpacer.hide()
+        self.label.hide()  ################################################
+        self.volume.hide()  ################################################
+        self.menubar.hide()  ################################################################
+        self.sliderfilm.hide()  ################################################
+        self.statusBar.hide()
+        self.showFullScreen()  ################################################
+        self.listbtn.hide()
+        self.listView.hide()
+
+    def unfull(self):
+        self.centralwidget.setContentsMargins(10, 10, 10, 10)
+        self.decreaseRate.show()
+        self.increaseRate.show()
+        self.play.show()  ################################################
+        # self.stop.show()  ################################################
+        self.open.show()  ################################################
+        self.skipforward.show()  ################################################
+        self.skipback.show()  ################################################
+        # self.horizontalSpacer_2.hide()
+        # self.horizontalSpacer.hide()
+        self.label.show()  ################################################
+        self.volume.show()  ################################################
+        self.menubar.show()  ################################################################
+        self.sliderfilm.show()  ################################################
+        self.statusBar.show()
+        self.showNormal()  ################################################
+        self.listbtn.show()
+        # self.listView.show()
 
     ##setting position of film
     def setpos(self, position):
@@ -191,6 +282,7 @@ class IntroWindow(QMainWindow, Form):
 
     ##open button or open from menu bar
     def Loadvideo(self, videoplayer):
+        self.a = 0
         filename, _ = QFileDialog.getOpenFileName(self, "Open Video")
         if filename != "":
             self.videoplayer.setPosition(0)
