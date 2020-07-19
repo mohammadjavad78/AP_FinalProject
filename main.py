@@ -98,6 +98,7 @@ class IntroWindow(QMainWindow, Form):
         self.listviewstatus = 0
         self.listbtn.clicked.connect(lambda: self.list())
         self.listView.itemClicked.connect(self.listwidgetclicked)
+        self.theme1.triggered.connect(lambda: self.theme1())
 
         # def itemClicked(item):
         #     print("sassss")
@@ -306,6 +307,9 @@ class IntroWindow(QMainWindow, Form):
         else:
             self.videoplayer.play()
             self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+
+    def theme1(self):
+        print("YO")
 
 
 if __name__ == "__main__":
