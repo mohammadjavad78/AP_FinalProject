@@ -19,6 +19,50 @@ from PyQt5.QtCore import QUrl, Qt
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.uic import loadUi
 
+qss = """
+    QMenuBar {
+        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                        stop:0 lightgray, stop:1 darkgray);
+    }
+    QMenuBar::item {
+        spacing: 3px;           
+        padding: 2px 10px;
+        background-color: rgb(210,105,30);
+        color: rgb(255,255,255);  
+        border-radius: 5px;
+    }
+    QMenuBar::item:selected {    
+        background-color: rgb(244,164,96);
+    }
+    QMenuBar::item:pressed {
+        background: rgb(128,0,0);
+    }
+
+    /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
+
+    QMenu {
+        background-color: #ABABAB;   
+        border: 1px solid black;
+        margin: 2px;
+    }
+    QMenu::item {
+        color: white;
+        background-color: tranparent;
+
+    }
+    QMenu::item:selected { 
+        background-color: #654321;
+        color: rgb(255,255,255);
+    }
+
+    QVideoWidget {
+        background-color: #A0A0A0;
+    }
+    """
+
+
+
+
 
 Form = uic.loadUiType(os.path.join(os.getcwd(), "gui-intro.ui"))[0]
 
@@ -55,10 +99,10 @@ class IntroWindow(QMainWindow, Form):
         self.setupUi(self)
 
         self.a = 1
-        videowidget = QVideoWidget()
-        self.vertical.addWidget(videowidget)
+        self.videowidget = QVideoWidget()
+        self.vertical.addWidget(self.videowidget)
         self.videoplayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
-        self.videoplayer.setVideoOutput(videowidget)
+        self.videoplayer.setVideoOutput(self.videowidget)
         self.sliderfilm.setRange(0, 0)
         self.volume.setRange(0, 100)
         self.videoplayer.setVolume(100)
@@ -78,6 +122,7 @@ class IntroWindow(QMainWindow, Form):
         self.open.setIcon(self.style().standardIcon(QStyle.SP_DirHomeIcon))
         self.skipforward.setIcon(self.style().standardIcon(QStyle.SP_MediaSkipForward))
         self.skipback.setIcon(self.style().standardIcon(QStyle.SP_MediaSkipBackward))
+        self.stop.setIcon(self.style().standardIcon(QStyle.SP_MediaStop))
 
         self.sliderfilm.sliderMoved.connect(self.setpos)
         self.videoplayer.positionChanged.connect(self.position)
@@ -93,12 +138,16 @@ class IntroWindow(QMainWindow, Form):
         self.decreaseRate.clicked.connect(self.decRate)
         self.play.clicked.connect(self.play_video)
         self.open.clicked.connect(lambda: self.Loadvideo(self.videoplayer))
+        self.stop.clicked.connect(self.stopp)
         self.listView.hide()
         self.addtolist()
         self.listviewstatus = 0
         self.listbtn.clicked.connect(lambda: self.list())
         self.listView.itemClicked.connect(self.listwidgetclicked)
-        self.theme1.triggered.connect(lambda: self.theme1())
+        self.theme1.triggered.connect(lambda: self.theme01())
+        self.theme2.triggered.connect(lambda: self.theme02())
+        self.theme3.triggered.connect(lambda: self.theme03())
+        self.theme4.triggered.connect(lambda: self.theme04())
 
         # def itemClicked(item):
         #     print("sassss")
@@ -108,6 +157,11 @@ class IntroWindow(QMainWindow, Form):
         # self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         # self.hide()
         # self.show()
+
+    def stopp(self):
+        self.stop.setEnabled(False)
+        self.videoplayer.stop()
+        self.videoplayer.setPosition(0)
 
     def listwidgetclicked(self, item):
         t = item.text()
@@ -308,14 +362,31 @@ class IntroWindow(QMainWindow, Form):
             self.videoplayer.play()
             self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
-    def theme1(self):
-        print("YO")
+    
+
+    def theme01(self):
+        self.videowidget.setStyleSheet("background-color: #404040")
+        self.setStyleSheet("background-color: #A0A0A0")
+    
+    def theme02(self):
+        self.videowidget.setStyleSheet("background-color: #330019")
+        self.setStyleSheet("background-color: #990000")
+    
+    def theme03(self):
+        self.videowidget.setStyleSheet("background-color: #35557F")
+        self.setStyleSheet("background-color: #003366")
+    def theme04(self):
+        self.videowidget.setStyleSheet("background-color: #00FF00")
+        self.setStyleSheet("background-color: #4C9900")
+
+        
+
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
-
+    app.setStyleSheet(qss) 
     w = IntroWindow()
     w.show()
     sys.exit(app.exec_())

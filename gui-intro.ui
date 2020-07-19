@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>880</width>
+    <width>768</width>
     <height>661</height>
    </rect>
   </property>
@@ -139,6 +139,13 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="open">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="horizontalSpacer">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -148,7 +155,7 @@
              </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>250</width>
+               <width>100</width>
                <height>0</height>
               </size>
              </property>
@@ -162,7 +169,13 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="open">
+            <widget class="QPushButton" name="stop">
+             <property name="minimumSize">
+              <size>
+               <width>40</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -280,9 +293,12 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>880</width>
+     <width>768</width>
      <height>26</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">blue</string>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -299,6 +315,7 @@
     <addaction name="theme1"/>
     <addaction name="theme2"/>
     <addaction name="theme3"/>
+    <addaction name="theme4"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -323,6 +340,9 @@
    <property name="text">
     <string>Theme 1</string>
    </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="theme2">
    <property name="text">
@@ -332,6 +352,11 @@
   <action name="theme3">
    <property name="text">
     <string>Theme 3</string>
+   </property>
+  </action>
+  <action name="theme4">
+   <property name="text">
+    <string>Theme 4</string>
    </property>
   </action>
  </widget>
