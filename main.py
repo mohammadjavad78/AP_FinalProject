@@ -12,12 +12,16 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QFileDialog,
     QStyle,
-)  # , QHBoxLayout, QVBoxLayout
+    QHBoxLayout,
+    QVBoxLayout,
+)
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtGui import QIcon, QPalette, QImage
 from PyQt5.QtCore import QUrl, Qt
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.uic import loadUi
+import win32api
+
 
 qss = """
     QMenuBar {
@@ -61,10 +65,69 @@ qss = """
     """
 
 
-
-
-
 Form = uic.loadUiType(os.path.join(os.getcwd(), "gui-intro.ui"))[0]
+
+
+class PlotThread(QtCore.QThread):
+    def __init__(self, window, x, y):
+        QtCore.QThread.__init__(self, parent=window)
+        self.window = window
+        self.window.preview = Preview(x, y)
+        # self.preview = preview
+        frame = QFrame(self.window)
+        self.window.preview.main.addWidget(frame)
+        self.window.preview.setWindowFlags(Qt.FramelessWindowHint)
+        frame.move(x, y)
+        # frame.resize(112, 112)
+        # frame.setLineWidth(0.6)
+        qv = QVBoxLayout(frame)
+        self.window.preview.videowidget2 = QVideoWidget()
+        qv.addWidget(self.window.preview.videowidget2)
+        self.window.preview.videoplayer2 = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        self.window.preview.videoplayer2.setVideoOutput(
+            self.window.preview.videowidget2
+        )
+        self.window.preview.videoplayer2.setMedia(
+            QMediaContent(QUrl.fromLocalFile(self.window.filename))
+        )
+        self.window.preview.videoplayer2.play()
+        self.window.preview.videoplayer2.pause()
+        self.window.preview.show()
+
+    def run(self, x, y):
+        self.window.preview.videoplayer2.setPosition(100000)
+        self.window.x = 1
+        while (
+            x - 10 < win32api.GetCursorPos()[0]
+            and win32api.GetCursorPos()[0] < x + 10
+            and y - 10 < win32api.GetCursorPos()[1]
+            and win32api.GetCursorPos()[1] < y + 10
+        ):
+            # print("ssss")
+            pass
+        else:
+            print("close")
+            self.window.preview.close()
+
+
+class Preview(QMainWindow):
+    def __init__(self, x, y):
+        super(Preview, self).__init__()
+
+        loadUi("untitled2.ui", self)
+        self.move(x, y - 120)
+        # self.hide()
+
+    def mouseMoveEvent(self, event):
+        self.onHoveredleave()
+        print("move")
+
+    # def eventFilter(self, source, event):
+    #     if event.type() == QtCore.QEvent.MouseMove:
+    #         if event.buttons() == QtCore.Qt.NoButton:
+    #             print("sssss")
+    #             self.close()
+    #     return super(Window, self).eventFilter(source, event)
 
 
 class LoginPage(QDialog):
@@ -98,6 +161,10 @@ class IntroWindow(QMainWindow, Form):
 
         self.setupUi(self)
 
+        self.preview = Preview(0, 0)
+        self.preview.show()
+        self.preview.close()
+
         self.a = 1
         self.videowidget = QVideoWidget()
         self.vertical.addWidget(self.videowidget)
@@ -111,6 +178,8 @@ class IntroWindow(QMainWindow, Form):
         self.play.setEnabled(False)
         self.increaseRate.setEnabled(False)
         self.decreaseRate.setEnabled(False)
+
+        self.sliderfilm.installEventFilter(self)
 
         # putting Icons on buttons
 
@@ -148,6 +217,8 @@ class IntroWindow(QMainWindow, Form):
         self.theme2.triggered.connect(lambda: self.theme02())
         self.theme3.triggered.connect(lambda: self.theme03())
         self.theme4.triggered.connect(lambda: self.theme04())
+        self.filename = ""
+        self.x = 0
 
         # def itemClicked(item):
         #     print("sassss")
@@ -157,6 +228,43 @@ class IntroWindow(QMainWindow, Form):
         # self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         # self.hide()
         # self.show()
+
+    def eventFilter(self, obj, event):
+        if (
+            obj == self.sliderfilm
+            and event.type() == QtCore.QEvent.HoverEnter
+            and event.type() != QtCore.QEvent.HoverMove
+            # and event.type() != QtCore.QEvent.MouseButtonPress
+            # and event.type() != QtCore.QEvent.MouseMove
+        ):
+            self.onHovered()
+        return super(QMainWindow, self).eventFilter(obj, event)
+
+        # qv.resize(100, 100)
+        # # frame.
+        # qv.move(x, y)
+
+    def mouseMoveEvent(self, event):
+        self.onHoveredleave()
+        print("move")
+
+    def onHoveredleave(self):
+        print("close")
+        self.preview.close()
+        self.x = 0
+
+    def onHovered(self):
+        # print("hovered")
+        x, y = win32api.GetCursorPos()
+        print(f"x,y mouse is {x},{y}")
+        print(self.sliderfilm.width(), self.sliderfilm.height())
+        print(
+            self.mapToGlobal(self.sliderfilm.pos()).x(),
+            self.mapToGlobal(self.sliderfilm.pos()).y(),
+        )
+        if self.filename != "":
+            self.thread = PlotThread(self, x, y)
+            self.thread.run(x, y)
 
     def stopp(self):
         self.stop.setEnabled(False)
@@ -283,8 +391,10 @@ class IntroWindow(QMainWindow, Form):
         self.showFullScreen()  ################################################
         self.listbtn.hide()
         self.listView.hide()
+        self.stop.hide()
 
     def unfull(self):
+        self.stop.show()
         self.centralwidget.setContentsMargins(10, 10, 10, 10)
         self.decreaseRate.show()
         self.increaseRate.show()
@@ -341,6 +451,7 @@ class IntroWindow(QMainWindow, Form):
         filename, _ = QFileDialog.getOpenFileName(self, "Open Video")
         if filename != "":
             self.videoplayer.setPosition(0)
+            self.filename = filename
             types = (".mov" in filename) or (".png" in filename) or (".mp4" in filename)
             if types:
                 if filename != "":
@@ -362,31 +473,27 @@ class IntroWindow(QMainWindow, Form):
             self.videoplayer.play()
             self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
-    
-
     def theme01(self):
         self.videowidget.setStyleSheet("background-color: #404040")
         self.setStyleSheet("background-color: #A0A0A0")
-    
+
     def theme02(self):
         self.videowidget.setStyleSheet("background-color: #330019")
         self.setStyleSheet("background-color: #990000")
-    
+
     def theme03(self):
         self.videowidget.setStyleSheet("background-color: #35557F")
         self.setStyleSheet("background-color: #003366")
+
     def theme04(self):
         self.videowidget.setStyleSheet("background-color: #00FF00")
         self.setStyleSheet("background-color: #4C9900")
-
-        
-
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
-    app.setStyleSheet(qss) 
+    app.setStyleSheet(qss)
     w = IntroWindow()
     w.show()
     sys.exit(app.exec_())
