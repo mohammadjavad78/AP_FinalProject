@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>768</width>
-    <height>661</height>
+    <width>762</width>
+    <height>645</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -109,6 +109,9 @@
            </property>
            <item>
             <widget class="QSlider" name="sliderfilm">
+             <property name="statusTip">
+              <string/>
+             </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -126,6 +129,12 @@
            </property>
            <item>
             <widget class="QPushButton" name="decreaseRate">
+             <property name="toolTip">
+              <string>Decrease Play Speed</string>
+             </property>
+             <property name="statusTip">
+              <string>Decrease Play Speed</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -133,6 +142,12 @@
            </item>
            <item>
             <widget class="QPushButton" name="increaseRate">
+             <property name="toolTip">
+              <string>Increase Play Speed</string>
+             </property>
+             <property name="statusTip">
+              <string>Increase Play Speed</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -140,6 +155,12 @@
            </item>
            <item>
             <widget class="QPushButton" name="open">
+             <property name="toolTip">
+              <string>Open Video</string>
+             </property>
+             <property name="statusTip">
+              <string>Open Video</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -176,6 +197,18 @@
                <height>0</height>
               </size>
              </property>
+             <property name="mouseTracking">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Stop</string>
+             </property>
+             <property name="statusTip">
+              <string>Stop</string>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -183,6 +216,12 @@
            </item>
            <item>
             <widget class="QPushButton" name="skipback">
+             <property name="toolTip">
+              <string>Skip Backward</string>
+             </property>
+             <property name="statusTip">
+              <string>Skip Backward</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -190,6 +229,12 @@
            </item>
            <item>
             <widget class="QPushButton" name="play">
+             <property name="toolTip">
+              <string>Play/Pause</string>
+             </property>
+             <property name="statusTip">
+              <string>Play/Pause</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -197,6 +242,12 @@
            </item>
            <item>
             <widget class="QPushButton" name="skipforward">
+             <property name="toolTip">
+              <string>Skip Forward</string>
+             </property>
+             <property name="statusTip">
+              <string>Skip Forward</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -229,6 +280,9 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="statusTip">
+              <string>Volume</string>
+             </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -258,6 +312,15 @@
                <height>20</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>With this you can easily handle to jump from one part of video to another</string>
+             </property>
+             <property name="statusTip">
+              <string>Easy Acess</string>
+             </property>
+             <property name="whatsThis">
+              <string>With this you can handle to easy jump from one part of video to another</string>
+             </property>
              <property name="text">
               <string>^</string>
              </property>
@@ -277,6 +340,9 @@
                <height>100</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>With this you can easily handle to jump from one part of video to another</string>
+             </property>
             </widget>
            </item>
           </layout>
@@ -293,7 +359,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>768</width>
+     <width>762</width>
      <height>26</height>
     </rect>
    </property>

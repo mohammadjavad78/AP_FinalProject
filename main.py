@@ -21,6 +21,8 @@ from PyQt5.QtCore import QUrl, Qt
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.uic import loadUi
 import win32api
+import csv
+import time
 
 
 qss = """
@@ -136,14 +138,8 @@ class LoginPage(QDialog):
         loadUi("searchtag.ui", self)
 
     def shows(self, layout):
-        data = pd.read_excel("tags.xlsx")
-        firstline = pd.DataFrame(data, index=[0])
-        if self.tableWidget.currentRow() == 0:
-            dt = parse(str(list(firstline)[1]))
-            t = str(list(firstline)[1])
-        else:
-            dt = parse(str(data.iat[self.tableWidget.currentRow(), 1]))
-            t = str(data.iat[self.tableWidget.currentRow() - 1, 1])
+        x = self.tableWidget.currentRow()
+        t = layout.dataL[x][1]
         pt = datetime.strptime(t, "%H:%M:%S")
         total_seconds = pt.second + pt.minute * 60 + pt.hour * 3600
         layout.videoplayer.setPosition(total_seconds * 1000)
@@ -160,6 +156,10 @@ class IntroWindow(QMainWindow, Form):
         self.setPalette(p)
 
         self.setupUi(self)
+
+        with open("TagSample1.csv", mode="r+") as f:
+            data = csv.reader(f)
+            self.dataL = list(data)
 
         self.preview = Preview(0, 0)
         self.preview.show()
@@ -219,7 +219,6 @@ class IntroWindow(QMainWindow, Form):
         self.theme4.triggered.connect(lambda: self.theme04())
         self.filename = ""
         self.x = 0
-
         # def itemClicked(item):
         #     print("sassss")
 
@@ -273,6 +272,7 @@ class IntroWindow(QMainWindow, Form):
 
     def listwidgetclicked(self, item):
         t = item.text()
+        t = t[t.find(">") + 1 :]
         pt = datetime.strptime(t, "%H:%M:%S")
         total_seconds = pt.second + pt.minute * 60 + pt.hour * 3600
         if self.a == 0:
@@ -306,7 +306,15 @@ class IntroWindow(QMainWindow, Form):
         if e.key() == Qt.Key_Escape:
             if self.isFullScreen():
                 self.unfull()
-                # self.showNormal()
+        if e.key() == Qt.RightArrow:
+            self.skipforward()
+            print("sss")
+        if e.key() == Qt.LeftArrow:
+            self.skipbac()
+        if e.key() == Qt.Key_Space:
+            if self.filename != "":
+                self.play_video()
+            # self.showNormal()
 
     def screen(self):
         if not self.isFullScreen():
@@ -341,34 +349,63 @@ class IntroWindow(QMainWindow, Form):
         self.videoplayer.setPlaybackRate(x - 0.25)
 
     def addtolist(self):
-        data = pd.read_excel("tags.xlsx")
-        firstline = pd.DataFrame(data, index=[0])
-        x = pd.DataFrame(data, columns=[list(firstline)[0]])
-        self.listView.addItem(str(list(firstline)[1]))
-        for i in range(x.size):
-            self.listView.addItem(str(data.iat[i, 1]))
+        for i in range(len(self.dataL)):
+            self.listView.addItem(self.dataL[i][0] + "->" + self.dataL[i][1])
 
     def opensecond(self):
         login_page = LoginPage()
         login_page.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
-        data = pd.read_excel("tags.xlsx")
-        firstline = pd.DataFrame(data, index=[0])
-        x = pd.DataFrame(data, columns=[list(firstline)[0]])
-        login_page.tableWidget.setRowCount(x.size)
-        login_page.tableWidget.insertRow(1)
-        login_page.tableWidget.setItem(
-            0, 0, QtWidgets.QTableWidgetItem(list(firstline)[0])
+        login_page.tableWidget.setRowCount(len(self.dataL))
+        for i in range(len(self.dataL)):
+            login_page.tableWidget.setItem(
+                i, 0, QtWidgets.QTableWidgetItem(self.dataL[i][0])
+            )
+            login_page.tableWidget.setItem(
+                i, 1, QtWidgets.QTableWidgetItem(self.dataL[i][1])
+            )
+
+        login_page.buttonBox.accepted.connect(
+            lambda: [self.listbtn.setFocus(), self.listView.clear(), self.addtolist(),]
         )
-        login_page.tableWidget.setItem(
-            0, 1, QtWidgets.QTableWidgetItem(str(list(firstline)[1]))
+        login_page.apply.clicked.connect(
+            lambda: [self.listView.clear(), self.addtolist(),]
         )
-        for i in range(x.size):
-            for j in range(2):
+        login_page.AddRow.clicked.connect(
+            lambda: [
+                login_page.tableWidget.insertRow(len(self.dataL)),
+                self.dataL.append(["tag", "0:10:" + str(len(self.dataL))]),
                 login_page.tableWidget.setItem(
-                    i + 1, j, QtWidgets.QTableWidgetItem(str(data.iat[i, j]))
-                )
-            # self.listView.addItem(str(data.iat[i, j]))
-        login_page.buttonBox.accepted.connect(lambda: login_page.shows(self))
+                    len(self.dataL) - 1,
+                    0,
+                    QtWidgets.QTableWidgetItem(self.dataL[len(self.dataL) - 1][0]),
+                ),
+                login_page.tableWidget.setItem(
+                    len(self.dataL) - 1,
+                    1,
+                    QtWidgets.QTableWidgetItem(self.dataL[len(self.dataL) - 1][1]),
+                ),
+            ]
+        )
+        login_page.Save.clicked.connect(
+            lambda: [
+                login_page.shows(self),
+                self.listbtn.setFocus(),
+                self.listView.clear(),
+                self.addtolist(),
+            ]
+        )
+
+        def delrow():
+            if len(self.dataL) > 0:
+                self.dataL.remove(self.dataL[login_page.tableWidget.currentRow()])
+
+        login_page.DeleteRow.clicked.connect(
+            lambda: [
+                login_page.tableWidget.removeRow(login_page.tableWidget.currentRow()),
+                delrow(),
+            ]
+        )
+
         login_page.tableWidget.setHorizontalHeaderLabels(["Tag", "Time"])
         login_page.exec_()
 
