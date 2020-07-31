@@ -3,6 +3,7 @@ import sys
 from dateutil.parser import parse
 import pandas as pd
 from datetime import datetime
+from moviepy.editor import VideoFileClip
 from PyQt5 import uic, QtCore, QtWidgets
 from PyQt5.QtWidgets import (
     QApplication,
@@ -70,46 +71,46 @@ qss = """
 Form = uic.loadUiType(os.path.join(os.getcwd(), "gui-intro.ui"))[0]
 
 
-class PlotThread(QtCore.QThread):
-    def __init__(self, window, x, y):
-        QtCore.QThread.__init__(self, parent=window)
-        self.window = window
-        self.window.preview = Preview(x, y)
-        # self.preview = preview
-        frame = QFrame(self.window)
-        self.window.preview.main.addWidget(frame)
-        self.window.preview.setWindowFlags(Qt.FramelessWindowHint)
-        frame.move(x, y)
-        # frame.resize(112, 112)
-        # frame.setLineWidth(0.6)
-        qv = QVBoxLayout(frame)
-        self.window.preview.videowidget2 = QVideoWidget()
-        qv.addWidget(self.window.preview.videowidget2)
-        self.window.preview.videoplayer2 = QMediaPlayer(None, QMediaPlayer.VideoSurface)
-        self.window.preview.videoplayer2.setVideoOutput(
-            self.window.preview.videowidget2
-        )
-        self.window.preview.videoplayer2.setMedia(
-            QMediaContent(QUrl.fromLocalFile(self.window.filename))
-        )
-        self.window.preview.videoplayer2.play()
-        self.window.preview.videoplayer2.pause()
-        self.window.preview.show()
+# class PlotThread(QtCore.QThread):
+#     def __init__(self, window, x, y):
+#         QtCore.QThread.__init__(self, parent=window)
+#         self.window = window
+#         self.window.preview = Preview(x, y)
+#         # self.preview = preview
+#         frame = QFrame(self.window)
+#         self.window.preview.main.addWidget(frame)
+#         self.window.preview.setWindowFlags(Qt.FramelessWindowHint)
+#         frame.move(x, y)
+#         # frame.resize(112, 112)
+#         # frame.setLineWidth(0.6)
+#         qv = QVBoxLayout(frame)
+#         self.window.preview.videowidget2 = QVideoWidget()
+#         qv.addWidget(self.window.preview.videowidget2)
+#         self.window.preview.videoplayer2 = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+#         self.window.preview.videoplayer2.setVideoOutput(
+#             self.window.preview.videowidget2
+#         )
+#         self.window.preview.videoplayer2.setMedia(
+#             QMediaContent(QUrl.fromLocalFile(self.window.filename))
+#         )
+#         self.window.preview.videoplayer2.play()
+#         self.window.preview.videoplayer2.pause()
+#         self.window.preview.show()
 
-    def run(self, x, y):
-        self.window.preview.videoplayer2.setPosition(100000)
-        self.window.x = 1
-        while (
-            x - 10 < win32api.GetCursorPos()[0]
-            and win32api.GetCursorPos()[0] < x + 10
-            and y - 10 < win32api.GetCursorPos()[1]
-            and win32api.GetCursorPos()[1] < y + 10
-        ):
-            # print("ssss")
-            pass
-        else:
-            print("close")
-            self.window.preview.close()
+#     def run(self, x, y):
+#         self.window.preview.videoplayer2.setPosition(100000)
+#         self.window.x = 1
+#         while (
+#             x - 10 < win32api.GetCursorPos()[0]
+#             and win32api.GetCursorPos()[0] < x + 10
+#             and y - 10 < win32api.GetCursorPos()[1]
+#             and win32api.GetCursorPos()[1] < y + 10
+#         ):
+#             # print("ssss")
+#             pass
+#         else:
+#             print("close")
+#             self.window.preview.close()
 
 
 class Preview(QMainWindow):
@@ -161,9 +162,9 @@ class IntroWindow(QMainWindow, Form):
             data = csv.reader(f)
             self.dataL = list(data)
 
-        self.preview = Preview(0, 0)
-        self.preview.show()
-        self.preview.close()
+        # self.preview = Preview(0, 0)
+        # self.preview.show()
+        # self.preview.close()
 
         self.a = 1
         self.videowidget = QVideoWidget()
@@ -180,6 +181,8 @@ class IntroWindow(QMainWindow, Form):
         self.decreaseRate.setEnabled(False)
 
         self.sliderfilm.installEventFilter(self)
+        self.frames.installEventFilter(self)
+        self.frame_2.installEventFilter(self)
 
         # putting Icons on buttons
 
@@ -219,6 +222,11 @@ class IntroWindow(QMainWindow, Form):
         self.theme4.triggered.connect(lambda: self.theme04())
         self.filename = ""
         self.x = 0
+        self.videowidget3 = QVideoWidget()
+        self.verticalLayout_8.addWidget(self.videowidget3)
+        self.videoplayer3 = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        self.videoplayer3.setVideoOutput(self.videowidget3)
+        self.widget.hide()
         # def itemClicked(item):
         #     print("sassss")
 
@@ -228,42 +236,33 @@ class IntroWindow(QMainWindow, Form):
         # self.hide()
         # self.show()
 
-    def eventFilter(self, obj, event):
-        if (
-            obj == self.sliderfilm
-            and event.type() == QtCore.QEvent.HoverEnter
-            and event.type() != QtCore.QEvent.HoverMove
-            # and event.type() != QtCore.QEvent.MouseButtonPress
-            # and event.type() != QtCore.QEvent.MouseMove
-        ):
-            self.onHovered()
-        return super(QMainWindow, self).eventFilter(obj, event)
-
-        # qv.resize(100, 100)
-        # # frame.
-        # qv.move(x, y)
-
-    def mouseMoveEvent(self, event):
-        self.onHoveredleave()
-        print("move")
-
-    def onHoveredleave(self):
-        print("close")
-        self.preview.close()
-        self.x = 0
+    def hoverleave(self):
+        self.widget.hide()
 
     def onHovered(self):
         # print("hovered")
         x, y = win32api.GetCursorPos()
-        print(f"x,y mouse is {x},{y}")
-        print(self.sliderfilm.width(), self.sliderfilm.height())
-        print(
-            self.mapToGlobal(self.sliderfilm.pos()).x(),
-            self.mapToGlobal(self.sliderfilm.pos()).y(),
-        )
         if self.filename != "":
-            self.thread = PlotThread(self, x, y)
-            self.thread.run(x, y)
+            # self.thread = PlotThread(self, x, y)
+            # self.thread.run(x, y)
+            #         self.window.preview.videoplayer2.setPosition(100000)
+            if self.listviewstatus % 2 == 1:
+                self.videoplayer3.setPosition(
+                    (x - self.mapToGlobal(self.sliderfilm.pos()).x())
+                    / self.sliderfilm.width()
+                    * self.dur
+                    * 1000
+                )
+                self.widget.show()
+
+    def eventFilter(self, obj, event):
+        if obj == self.sliderfilm and event.type() == QtCore.QEvent.HoverMove:
+            self.onHovered()
+        elif (
+            obj == self.frames or obj == self.frame_2
+        ) and event.type() == QtCore.QEvent.Enter:
+            self.hoverleave()
+        return super(QMainWindow, self).eventFilter(obj, event)
 
     def stopp(self):
         self.stop.setEnabled(False)
@@ -281,18 +280,13 @@ class IntroWindow(QMainWindow, Form):
     def list(self):
         if self.listviewstatus % 2 == 1:
             self.listView.hide()
+            self.widget.hide()
             self.listbtn.setText("^")
             self.listviewstatus += 1
         else:
             self.listbtn.setText("v")
             self.listviewstatus += 1
             self.listView.show()
-
-    # def resizeEvent(self, cls):
-    #     print(self.geometry())
-    #     width = self.frameGeometry().width()
-    #     height = self.frameGeometry().height()
-    #     self.button.move(width - 200, height - 200)
 
     def mouseDoubleClickEvent(self, cls):
         if not self.isFullScreen():
@@ -427,11 +421,16 @@ class IntroWindow(QMainWindow, Form):
         self.statusBar.hide()
         self.showFullScreen()  ################################################
         self.listbtn.hide()
+        self.widget.hide()
         self.listView.hide()
+        self.frame_2.hide()
         self.stop.hide()
+        self.listviewstatus = 1
 
     def unfull(self):
+        self.frame_2.show()
         self.stop.show()
+        self.list()
         self.centralwidget.setContentsMargins(10, 10, 10, 10)
         self.decreaseRate.show()
         self.increaseRate.show()
@@ -492,9 +491,17 @@ class IntroWindow(QMainWindow, Form):
             types = (".mov" in filename) or (".png" in filename) or (".mp4" in filename)
             if types:
                 if filename != "":
+                    clip = VideoFileClip(filename)
+                    self.dur = clip.duration
                     self.videoplayer.setMedia(
                         QMediaContent(QUrl.fromLocalFile(filename))
                     )
+                    self.videoplayer3.setMedia(
+                        QMediaContent(QUrl.fromLocalFile(filename))
+                    )
+                    self.videoplayer3.play()
+                    self.videoplayer3.pause()
+                    self.widget.hide()
                     self.videoplayer.play()
                     self.play.setEnabled(True)
                     self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
