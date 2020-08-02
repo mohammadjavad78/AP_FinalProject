@@ -231,6 +231,7 @@ class IntroWindow(QMainWindow, Form):
         self.videoplayer3.setVideoOutput(self.videowidget3)
         self.widget.hide()
         self.stop.setEnabled(False)
+        self.m = 0
         # def itemClicked(item):
         #     print("sassss")
 
@@ -348,6 +349,19 @@ class IntroWindow(QMainWindow, Form):
         if e.key() == Qt.Key_Space:
             if self.filename != "":
                 self.play_video()
+        if e.key() == Qt.Key_M:
+            if self.m % 2 == 0:
+                self.m += 1
+                self.videoplayer.setMuted(True)
+                self.volume.setEnabled(False)
+                self.vvv = self.volume.value()
+                self.volume.setValue(0)
+            else:
+                self.m += 1
+                self.volume.setValue(self.vvv)
+                self.volume.setEnabled(True)
+                self.videoplayer.setMuted(False)
+            # print(self.videoplayer.isMuted)
             # self.showNormal()
 
     def screen(self):
