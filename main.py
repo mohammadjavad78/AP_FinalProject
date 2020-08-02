@@ -268,6 +268,7 @@ class IntroWindow(QMainWindow, Form):
         self.stop.setEnabled(False)
         self.videoplayer.stop()
         self.videoplayer.setPosition(0)
+        self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
     def listwidgetclicked(self, item):
         t = item.text()
@@ -515,6 +516,7 @@ class IntroWindow(QMainWindow, Form):
             self.videoplayer.pause()
         else:
             self.videoplayer.play()
+            self.stop.setEnabled(True)
             self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
     def theme01(self):
