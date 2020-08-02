@@ -260,6 +260,9 @@ class IntroWindow(QMainWindow, Form):
                 * 100
             )
         )
+        if self.m % 2 == 1:
+            self.m += 1
+            self.videoplayer.setMuted(False)
 
     def goto(self):
         x, y = win32api.GetCursorPos()
@@ -415,13 +418,21 @@ class IntroWindow(QMainWindow, Form):
         login_page.buttonBox.accepted.connect(
             lambda: [self.listbtn.setFocus(), self.listView.clear(), self.addtolist(),]
         )
+        # print(self.videoplayer.position())
+        h = int(self.videoplayer.position() / 1000 // 3600)
+        m = int((self.videoplayer.position() / 1000 - h * 3600) // 60)
+        s = int(
+            ((self.videoplayer.position() / 1000 - h * 3600 - m * 60) % 60) * 100 // 100
+        )
+        x = f"{h}:{m}:{s}"
+        # print(x)
         login_page.apply.clicked.connect(
             lambda: [self.listView.clear(), self.addtolist(),]
         )
         login_page.AddRow.clicked.connect(
             lambda: [
                 login_page.tableWidget.insertRow(len(self.dataL)),
-                self.dataL.append(["tag", "0:10:" + str(len(self.dataL))]),
+                self.dataL.append(["tag", x,]),
                 login_page.tableWidget.setItem(
                     len(self.dataL) - 1,
                     0,
