@@ -24,6 +24,7 @@ from PyQt5.uic import loadUi
 import win32api
 import csv
 import time
+from moviepy.editor import VideoFileClip
 
 
 qss = """
@@ -213,6 +214,7 @@ class IntroWindow(QMainWindow, Form):
         self.open.clicked.connect(lambda: self.Loadvideo(self.videoplayer))
         self.stop.clicked.connect(self.stopp)
         self.listView.hide()
+        self.tolfilm = 0
         self.addtolist()
         self.listviewstatus = 0
         self.listbtn.clicked.connect(lambda: self.list())
@@ -453,6 +455,7 @@ class IntroWindow(QMainWindow, Form):
         # self.horizontalSpacer_2.hide()
         # self.horizontalSpacer.hide()
         self.label.hide()  ################################################
+        self.label_2.hide()  ################################################
         self.volume.hide()  ################################################
         self.menubar.hide()  ################################################################
         self.sliderfilm.hide()  ################################################
@@ -480,6 +483,7 @@ class IntroWindow(QMainWindow, Form):
         # self.horizontalSpacer_2.hide()
         # self.horizontalSpacer.hide()
         self.label.show()  ################################################
+        self.label_2.show()  ################################################
         self.volume.show()  ################################################
         self.menubar.show()  ################################################################
         self.sliderfilm.show()  ################################################
@@ -493,16 +497,27 @@ class IntroWindow(QMainWindow, Form):
         self.videoplayer.setPosition(position)
 
     def position(self, position):
+        position2 = self.tolfilm * 1000 - position
         hour = int((position / 3600000) % 24)
+        hour2 = int((position2 / 3600000) % 24)
         if hour < 10:
             hour = "0" + str(hour)
+        if hour2 < 10:
+            hour2 = "0" + str(hour2)
         minute = int((position / 60000) % 60)
+        minute2 = int((position2 / 60000) % 60)
         if minute < 10:
             minute = "0" + str(minute)
+        if minute2 < 10:
+            minute2 = "0" + str(minute2)
         second = int((position / 1000) % 60)
+        second2 = int((position2 / 1000) % 60)
         if second < 10:
             second = "0" + str(second)
+        if second2 < 10:
+            second2 = "0" + str(second2)
         self.label.setText(f"{hour}:{minute}:{second}")
+        self.label_2.setText(f"{hour2}:{minute2}:{second2}")
         self.sliderfilm.setValue(position)
 
     def changed(self, duration):
@@ -537,6 +552,8 @@ class IntroWindow(QMainWindow, Form):
                     self.videoplayer3.setMedia(
                         QMediaContent(QUrl.fromLocalFile(filename))
                     )
+                    clip = VideoFileClip(filename)
+                    self.tolfilm = int(clip.duration)
                     title = filename.split("/")
                     # print(title)
                     title = title[len(title) - 1]

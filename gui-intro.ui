@@ -109,6 +109,12 @@
            </property>
            <item>
             <widget class="QSlider" name="sliderfilm">
+             <property name="mouseTracking">
+              <bool>false</bool>
+             </property>
+             <property name="tabletTracking">
+              <bool>false</bool>
+             </property>
              <property name="statusTip">
               <string/>
              </property>
@@ -283,6 +289,13 @@
                   <property name="statusTip">
                    <string>Skip Forward</string>
                   </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_2">
                   <property name="text">
                    <string/>
                   </property>
