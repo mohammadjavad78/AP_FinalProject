@@ -227,6 +227,7 @@ class IntroWindow(QMainWindow, Form):
         self.videoplayer3 = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         self.videoplayer3.setVideoOutput(self.videowidget3)
         self.widget.hide()
+        self.stop.setEnabled(False)
         # def itemClicked(item):
         #     print("sassss")
 
@@ -238,6 +239,19 @@ class IntroWindow(QMainWindow, Form):
 
     def hoverleave(self):
         self.widget.hide()
+
+    def goto(self):
+        x, y = win32api.GetCursorPos()
+        if self.filename != "":
+            # self.thread = PlotThread(self, x, y)
+            # self.thread.run(x, y)
+            #         self.window.preview.videoplayer2.setPosition(100000)
+            self.videoplayer.setPosition(
+                (x - self.mapToGlobal(self.sliderfilm.pos()).x())
+                / self.sliderfilm.width()
+                * self.dur
+                * 1000
+            )
 
     def onHovered(self):
         # print("hovered")
@@ -262,6 +276,8 @@ class IntroWindow(QMainWindow, Form):
             obj == self.frames or obj == self.frame_2
         ) and event.type() == QtCore.QEvent.Enter:
             self.hoverleave()
+        elif obj == self.sliderfilm and event.type() == QtCore.QEvent.MouseButtonPress:
+            self.goto()
         return super(QMainWindow, self).eventFilter(obj, event)
 
     def stopp(self):
@@ -503,6 +519,7 @@ class IntroWindow(QMainWindow, Form):
                     self.videoplayer3.play()
                     self.videoplayer3.pause()
                     self.widget.hide()
+                    self.stop.setEnabled(True)
                     self.videoplayer.play()
                     self.play.setEnabled(True)
                     self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
