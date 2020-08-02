@@ -537,6 +537,11 @@ class IntroWindow(QMainWindow, Form):
                     self.videoplayer3.setMedia(
                         QMediaContent(QUrl.fromLocalFile(filename))
                     )
+                    title = filename.split("/")
+                    # print(title)
+                    title = title[len(title) - 1]
+                    # print(title)
+                    self.setWindowTitle(f"Taz Player openning{title}")
                     self.videoplayer3.play()
                     self.videoplayer3.pause()
                     self.widget.hide()
