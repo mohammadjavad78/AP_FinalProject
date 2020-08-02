@@ -181,6 +181,7 @@ class IntroWindow(QMainWindow, Form):
         self.decreaseRate.setEnabled(False)
 
         self.sliderfilm.installEventFilter(self)
+        self.volume.installEventFilter(self)
         self.frames.installEventFilter(self)
         self.frame_2.installEventFilter(self)
 
@@ -240,6 +241,23 @@ class IntroWindow(QMainWindow, Form):
     def hoverleave(self):
         self.widget.hide()
 
+    def gotovolume(self):
+        x, y = win32api.GetCursorPos()
+        self.videoplayer.setVolume(
+            int(
+                (x - self.mapToGlobal(self.volume.pos()).x())
+                / self.volume.width()
+                * 100
+            )
+        )
+        self.volume.setValue(
+            int(
+                (x - self.mapToGlobal(self.volume.pos()).x())
+                / self.volume.width()
+                * 100
+            )
+        )
+
     def goto(self):
         x, y = win32api.GetCursorPos()
         if self.filename != "":
@@ -278,6 +296,9 @@ class IntroWindow(QMainWindow, Form):
             self.hoverleave()
         elif obj == self.sliderfilm and event.type() == QtCore.QEvent.MouseButtonPress:
             self.goto()
+        elif obj == self.volume and event.type() == QtCore.QEvent.MouseButtonPress:
+            self.gotovolume()
+
         return super(QMainWindow, self).eventFilter(obj, event)
 
     def stopp(self):
