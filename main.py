@@ -625,7 +625,7 @@ class IntroWindow(QMainWindow, Form):
     def Loadvideo(self, videoplayer):
         self.a = 0
         filename, _ = QFileDialog.getOpenFileName(
-            self, "Open Video", filter="*.mp4;*.mov"
+            self, "Open Video", filter="*.mp4;*.mov;*.wmv"
         )
         if filename != "":
             self.videoplayer.setPosition(0)
