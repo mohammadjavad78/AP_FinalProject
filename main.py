@@ -624,38 +624,34 @@ class IntroWindow(QMainWindow, Form):
     ##open button or open from menu bar
     def Loadvideo(self, videoplayer):
         self.a = 0
-        filename, _ = QFileDialog.getOpenFileName(self, "Open Video")
+        filename, _ = QFileDialog.getOpenFileName(
+            self, "Open Video", filter="*.mp4;*.mov"
+        )
         if filename != "":
             self.videoplayer.setPosition(0)
             self.filename = filename
-            types = (".mov" in filename) or (".png" in filename) or (".mp4" in filename)
-            if types:
-                if filename != "":
-                    clip = VideoFileClip(filename)
-                    self.dur = clip.duration
-                    self.videoplayer.setMedia(
-                        QMediaContent(QUrl.fromLocalFile(filename))
-                    )
-                    self.videoplayer3.setMedia(
-                        QMediaContent(QUrl.fromLocalFile(filename))
-                    )
-                    self.moviess()
-                    clip = VideoFileClip(filename)
-                    self.tolfilm = int(clip.duration)
-                    title = filename.split("/")
-                    # print(title)
-                    title = title[len(title) - 1]
-                    # print(title)
-                    self.setWindowTitle(f"Taz Player openning{title}")
-                    self.videoplayer3.play()
-                    self.videoplayer3.pause()
-                    self.widget.hide()
-                    self.stop.setEnabled(True)
-                    self.videoplayer.play()
-                    self.play.setEnabled(True)
-                    self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
-                    self.increaseRate.setEnabled(True)
-                    self.decreaseRate.setEnabled(True)
+            if filename != "":
+                clip = VideoFileClip(filename)
+                self.dur = clip.duration
+                self.videoplayer.setMedia(QMediaContent(QUrl.fromLocalFile(filename)))
+                self.videoplayer3.setMedia(QMediaContent(QUrl.fromLocalFile(filename)))
+                self.moviess()
+                clip = VideoFileClip(filename)
+                self.tolfilm = int(clip.duration)
+                title = filename.split("/")
+                # print(title)
+                title = title[len(title) - 1]
+                # print(title)
+                self.setWindowTitle(f"Taz Player openning{title}")
+                self.videoplayer3.play()
+                self.videoplayer3.pause()
+                self.widget.hide()
+                self.stop.setEnabled(True)
+                self.videoplayer.play()
+                self.play.setEnabled(True)
+                self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+                self.increaseRate.setEnabled(True)
+                self.decreaseRate.setEnabled(True)
 
     ##play button
     def play_video(self):
