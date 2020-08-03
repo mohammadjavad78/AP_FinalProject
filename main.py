@@ -499,7 +499,9 @@ class IntroWindow(QMainWindow, Form):
             self.listView.addItem(self.dataL[i][0] + "->" + self.dataL[i][1])
 
     def updateTagFile(self):
-        with open('TagSample1.csv', mode = 'w') as f:
+        fname = self.fileName.split('.')
+        fname = fname[0]
+        with open(fname + ".csv", mode = 'w') as f:
             writer = csv.writer(f, delimiter = ',', quotechar = '"', quoting = csv.QUOTE_MINIMAL, lineterminator='\n')
             for line in self.dataL:
                 writer.writerow(line)
@@ -565,7 +567,9 @@ class IntroWindow(QMainWindow, Form):
             self.dataL[i] = [tableWidget.item(i,0).text(), tableWidget.item(i,1).text()]
 
     def undoChanges(self, tableWidget):
-        with open("TagSample1.csv", mode="r+") as f:
+        fname = self.fileName.split('.')
+        fname = fname[0]
+        with open(fname + ".csv", mode="r+") as f:
             data = csv.reader(f)
             self.dataL = list(data)
 
