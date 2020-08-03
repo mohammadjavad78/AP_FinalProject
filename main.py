@@ -124,7 +124,6 @@ class Preview(QMainWindow):
 
     def mouseMoveEvent(self, event):
         self.onHoveredleave()
-        print("move")
 
     # def eventFilter(self, source, event):
     #     if event.type() == QtCore.QEvent.MouseMove:
@@ -185,6 +184,7 @@ class IntroWindow(QMainWindow, Form):
         self.volume.installEventFilter(self)
         self.frames.installEventFilter(self)
         self.frame_2.installEventFilter(self)
+        self.frames.installEventFilter(self)
 
         # putting Icons on buttons
 
@@ -304,6 +304,12 @@ class IntroWindow(QMainWindow, Form):
             self.goto()
         elif obj == self.volume and event.type() == QtCore.QEvent.MouseButtonPress:
             self.gotovolume()
+        elif obj == self.frames and event.type() == QtCore.QEvent.MouseButtonDblClick:
+            if not self.isFullScreen():
+                # self.showFullScreen()
+                self.fulls()
+            else:
+                self.unfull()
 
         return super(QMainWindow, self).eventFilter(obj, event)
 
@@ -332,21 +338,12 @@ class IntroWindow(QMainWindow, Form):
             self.listviewstatus += 1
             self.listView.show()
 
-    def mouseDoubleClickEvent(self, cls):
-        if not self.isFullScreen():
-            # self.showFullScreen()
-            self.fulls()
-        else:
-            self.unfull()
-            # self.showNormal()
-
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
             if self.isFullScreen():
                 self.unfull()
         if e.key() == Qt.RightArrow:
             self.skipforward()
-            print("sss")
         if e.key() == Qt.LeftArrow:
             self.skipbac()
         if e.key() == Qt.Key_Space:
@@ -522,7 +519,7 @@ class IntroWindow(QMainWindow, Form):
         self.videoplayer.setPosition(position)
 
     def position(self, position):
-        position2 = self.tolfilm * 1000 - position
+        position2 = self.tolfilm * 1000 - position + 1000
         hour = int((position / 3600000) % 24)
         hour2 = int((position2 / 3600000) % 24)
         if hour < 10:
@@ -544,6 +541,11 @@ class IntroWindow(QMainWindow, Form):
         self.label.setText(f"{hour}:{minute}:{second}")
         self.label_2.setText(f"{hour2}:{minute2}:{second2}")
         self.sliderfilm.setValue(position)
+        if position2 < 1000:
+            self.videoplayer.stop()
+            self.sliderfilm.setValue(0)
+            self.stop.setEnabled(False)
+            self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
     def changed(self, duration):
         self.sliderfilm.setRange(0, duration)
