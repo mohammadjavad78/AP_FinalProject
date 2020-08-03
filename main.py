@@ -14,11 +14,11 @@ from PyQt5.QtWidgets import (
     QFileDialog,
     QStyle,
     QHBoxLayout,
-    QVBoxLayout,
+    QVBoxLayout
 )
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtGui import QIcon, QPalette, QImage
-from PyQt5.QtCore import QUrl, Qt
+from PyQt5.QtCore import QUrl, Qt, QFileInfo
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.uic import loadUi
 import win32api
@@ -158,9 +158,9 @@ class IntroWindow(QMainWindow, Form):
 
         self.setupUi(self)
 
-        with open("TagSample1.csv", mode="r+") as f:
-            data = csv.reader(f)
-            self.dataL = list(data)
+        # with open("myvid.csv", mode="r+") as f:
+        #     data = csv.reader(f)
+        #     self.dataL = list(data)
 
         # self.preview = Preview(0, 0)
         # self.preview.show()
@@ -215,7 +215,7 @@ class IntroWindow(QMainWindow, Form):
         self.stop.clicked.connect(self.stopp)
         self.listView.hide()
         self.tolfilm = 0
-        self.addtolist()
+        # self.addtolist()
         self.listviewstatus = 0
         self.listbtn.clicked.connect(lambda: self.list())
         self.listView.itemClicked.connect(self.listwidgetclicked)
@@ -223,6 +223,8 @@ class IntroWindow(QMainWindow, Form):
         self.theme2.triggered.connect(lambda: self.theme02())
         self.theme3.triggered.connect(lambda: self.theme03())
         self.theme4.triggered.connect(lambda: self.theme04())
+        self.actionFarsi.triggered.connect(lambda: self.farsi())
+        self.actionEnglish.triggered.connect(lambda: self.english())
         self.filename = ""
         self.x = 0
         self.videowidget3 = QVideoWidget()
@@ -240,6 +242,31 @@ class IntroWindow(QMainWindow, Form):
         # self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         # self.hide()
         # self.show()
+
+    def farsi(self):
+        self.menuLanguage.setTitle("زبان")
+        self.menuView.setTitle("نگاره")
+        self.theme1.setText("تم ۱")
+        self.theme2.setText("تم ۲")
+        self.theme3.setText("تم ۳")
+        self.theme4.setText("تم ۴")
+        self.menuFile.setTitle("فایل")
+        self.actionOpen.setText("باز کردن")
+        self.actionSearch_By_Tag.setText("سرچ با تگ")
+        self.actionFullscreen.setText("بزرگ/گوچک کردن تصویر")
+        self.actionEnglish.setText("انگلیسی")
+    def english(self):
+        self.menuLanguage.setTitle("Language")
+        self.menuView.setTitle("View")
+        self.theme1.setText("Theme1")
+        self.theme2.setText("Theme2")
+        self.theme3.setText("Theme3")
+        self.theme4.setText("Theme4")
+        self.menuFile.setTitle("File")
+        self.actionOpen.setText("Open")
+        self.actionSearch_By_Tag.setText("Search by tag")
+        self.actionFullscreen.setText("Fullscreen/Normalscreen")
+        self.actionEnglish.setText("English")
 
     def moviess(self):
         x = self.filename.split("/")
@@ -625,8 +652,16 @@ class IntroWindow(QMainWindow, Form):
     def Loadvideo(self, videoplayer):
         self.a = 0
         filename, _ = QFileDialog.getOpenFileName(
-            self, "Open Video", filter="*.mp4;*.mov;*.wmv"
+            self, "Open Video", filter="*.mp4;*.mov;*.wmv;*.webm;*.wmv;*.m4v;*.m4a;*.flv"
         )
+        thename = QFileInfo(filename).fileName()
+        self.fileName = thename
+        fname = thename.split('.')
+        fnmae = fname[0]
+        with open(fnmae + ".csv", mode="r+") as f:
+            data = csv.reader(f)
+            self.dataL = list(data)
+        self.addtolist()
         if filename != "":
             self.videoplayer.setPosition(0)
             self.filename = filename

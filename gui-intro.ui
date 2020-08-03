@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>914</width>
-    <height>657</height>
+    <width>908</width>
+    <height>641</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -466,7 +466,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>914</width>
+     <width>908</width>
      <height>26</height>
     </rect>
    </property>
@@ -490,8 +490,16 @@
     <addaction name="theme3"/>
     <addaction name="theme4"/>
    </widget>
+   <widget class="QMenu" name="menuLanguage">
+    <property name="title">
+     <string>Language</string>
+    </property>
+    <addaction name="actionFarsi"/>
+    <addaction name="actionEnglish"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
+   <addaction name="menuLanguage"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
@@ -530,6 +538,16 @@
   <action name="theme4">
    <property name="text">
     <string>Theme 4</string>
+   </property>
+  </action>
+  <action name="actionFarsi">
+   <property name="text">
+    <string>Farsi</string>
+   </property>
+  </action>
+  <action name="actionEnglish">
+   <property name="text">
+    <string>English</string>
    </property>
   </action>
  </widget>
