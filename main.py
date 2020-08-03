@@ -165,6 +165,7 @@ class IntroWindow(QMainWindow, Form):
         # self.preview = Preview(0, 0)
         # self.preview.show()
         # self.preview.close()
+        
 
         self.a = 1
         self.videowidget = QVideoWidget()
@@ -242,6 +243,16 @@ class IntroWindow(QMainWindow, Form):
         # self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         # self.hide()
         # self.show()
+        with open("config.txt") as f:
+            self.config = f.read()
+        if(int(self.config) == 1):
+            self.theme01()
+        elif(int(self.config) == 2):
+            self.theme02()
+        elif(int(self.config) == 3):
+            self.theme03()
+        elif(int(self.config) == 4):
+            self.theme04()
 
     def farsi(self):
         self.menuLanguage.setTitle("زبان")
@@ -701,18 +712,26 @@ class IntroWindow(QMainWindow, Form):
     def theme01(self):
         self.videowidget.setStyleSheet("background-color: #404040")
         self.setStyleSheet("background-color: #A0A0A0")
+        with open("config.txt", 'w') as f:
+            f.write("1")
 
     def theme02(self):
         self.videowidget.setStyleSheet("background-color: #330019")
         self.setStyleSheet("background-color: #990000")
+        with open("config.txt", 'w') as f:
+            f.write("2")
 
     def theme03(self):
         self.videowidget.setStyleSheet("background-color: #35557F")
         self.setStyleSheet("background-color: #003366")
+        with open("config.txt", 'w') as f:
+            f.write("3")
 
     def theme04(self):
         self.videowidget.setStyleSheet("background-color: #00FF00")
         self.setStyleSheet("background-color: #4C9900")
+        with open("config.txt", 'w') as f:
+            f.write("4")
 
 
 if __name__ == "__main__":
