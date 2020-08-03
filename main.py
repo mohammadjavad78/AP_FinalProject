@@ -241,6 +241,30 @@ class IntroWindow(QMainWindow, Form):
         # self.hide()
         # self.show()
 
+    def moviess(self):
+        x = self.filename.split("/")
+        # print(X)
+        file_name = self.filename[: self.filename.find(x[len(x) - 1])]
+        png = ""
+        png2 = ""
+        folders = os.listdir(file_name + r"/")
+        # j = 0
+        for file in folders:
+            if file.find(".mp4") > 0:
+                # files = os.listdir(file_name + file)
+                png = png + ";" + file_name + file
+                png2 = ";" + file_name + file + png2
+        png = png + ";"
+        self.png = png
+        png2 = png2 + ";"
+        self.png2 = png2
+        #     files = sorted(files, key=len)
+        #     for file in files:
+        #         i, _ = loadImage(file_name + r"/" + folder + r"/" + file)
+        #         i = convertFace(i, efaces)
+        #         png.append([i, file_name + r"/" + folder + r"/" + file])
+        #         j += 1
+
     def hoverleave(self):
         self.widget.hide()
 
@@ -342,14 +366,16 @@ class IntroWindow(QMainWindow, Form):
         if e.key() == Qt.Key_Escape:
             if self.isFullScreen():
                 self.unfull()
-        if e.key() == Qt.RightArrow:
-            self.skipforward()
-        if e.key() == Qt.LeftArrow:
-            self.skipbac()
-        if e.key() == Qt.Key_Space:
+        elif e.key() == Qt.Key_6:
+            if self.filename != "":
+                self.videoplayer.setPosition(self.videoplayer.position() + 5000)
+        elif e.key() == Qt.Key_4:
+            if self.filename != "":
+                self.videoplayer.setPosition(self.videoplayer.position() - 5000)
+        elif e.key() == Qt.Key_Space:
             if self.filename != "":
                 self.play_video()
-        if e.key() == Qt.Key_M:
+        elif e.key() == Qt.Key_M:
             if self.m % 2 == 0:
                 self.m += 1
                 self.videoplayer.setMuted(True)
@@ -374,10 +400,44 @@ class IntroWindow(QMainWindow, Form):
 
     # forward media 5s
     def skipforw(self):
-        self.videoplayer.setPosition(self.videoplayer.position() + 5000)
+        a = self.png.find(self.filename)
+        aa = self.png.find(";", a + 1)
+        filename = self.png[aa + 1 : self.png.find(";", aa + 1)]
+        if filename != "":
+            self.filename = filename
+            self.videoplayer.setMedia(QMediaContent(QUrl.fromLocalFile(filename)))
+            self.videoplayer3.setMedia(QMediaContent(QUrl.fromLocalFile(filename)))
+            title = filename.split("/")
+            title = title[len(title) - 1]
+            self.setWindowTitle(f"Taz Player openning{title}")
+            self.videoplayer3.play()
+            self.videoplayer3.pause()
+            self.widget.hide()
+            self.videoplayer.setPosition(0)
+            self.videoplayer.play()
+            self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+            clip = VideoFileClip(filename)
+            self.dur = clip.duration
 
     def skipbac(self):
-        self.videoplayer.setPosition(self.videoplayer.position() - 5000)
+        a = self.png2.find(self.filename)
+        aa = self.png2.find(";", a + 1)
+        filename = self.png2[aa + 1 : self.png2.find(";", aa + 1)]
+        if filename != "":
+            self.filename = filename
+            self.videoplayer.setMedia(QMediaContent(QUrl.fromLocalFile(filename)))
+            self.videoplayer3.setMedia(QMediaContent(QUrl.fromLocalFile(filename)))
+            title = filename.split("/")
+            title = title[len(title) - 1]
+            self.setWindowTitle(f"Taz Player openning{title}")
+            self.videoplayer3.play()
+            self.videoplayer3.pause()
+            self.widget.hide()
+            self.videoplayer.setPosition(0)
+            self.videoplayer.play()
+            self.play.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+            clip = VideoFileClip(filename)
+            self.dur = clip.duration
 
         # set increase rate
 
@@ -579,6 +639,7 @@ class IntroWindow(QMainWindow, Form):
                     self.videoplayer3.setMedia(
                         QMediaContent(QUrl.fromLocalFile(filename))
                     )
+                    self.moviess()
                     clip = VideoFileClip(filename)
                     self.tolfilm = int(clip.duration)
                     title = filename.split("/")
