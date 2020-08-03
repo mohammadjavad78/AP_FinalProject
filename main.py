@@ -498,6 +498,77 @@ class IntroWindow(QMainWindow, Form):
         for i in range(len(self.dataL)):
             self.listView.addItem(self.dataL[i][0] + "->" + self.dataL[i][1])
 
+    def updateTagFile(self):
+        with open('TagSample1.csv', mode = 'w') as f:
+            writer = csv.writer(f, delimiter = ',', quotechar = '"', quoting = csv.QUOTE_MINIMAL, lineterminator='\n')
+            for line in self.dataL:
+                writer.writerow(line)
+
+    def giveTime(self):
+        vidPos = self.videoplayer.position()
+        h = int(vidPos / 1000 // 3600)
+        m = int((vidPos / 1000 - h * 3600) // 60)
+        s = int(((vidPos / 1000 - h * 3600 - m * 60) % 60) % 60) * 100 // 100
+        if h < 10:
+            h = "0" + str(h)
+        if m < 10:
+            m = "0" + str(m)
+        if s < 10:
+            s = "0" + str(s)
+        return f"{h}:{m}:{s}"
+
+    def insertTag(self, tableWidget):
+        t = tableWidget
+        tag = "New Tag"
+        tagTime = self.giveTime()
+        l = len(self.dataL)
+        i = 0
+        flag = False
+
+        while tagTime > self.dataL[i][1]:
+            i += 1
+            if i >= l:
+                break
+
+        if i < l:
+            if tagTime == self.dataL[i][1]:
+                self.dataL[i] = [tag, tagTime]
+                flag = True
+
+        if not flag:
+            self.dataL.insert(i, [tag, tagTime])
+
+            t.insertRow(i)
+            t.setItem(
+                    i,
+                    0,
+                    QtWidgets.QTableWidgetItem(tag),
+                )
+            t.setItem(
+                    i,
+                    1,
+                    QtWidgets.QTableWidgetItem(tagTime),
+                )
+            #login_page.tableWidget.item(i, 0).setSelected(True)
+            t.editItem(t.item(i, 0))
+
+    def removeRow(self, tableWidget):
+            #print(login_page.tableWidget.currentRow())
+            if len(self.dataL) > 0:
+                self.dataL.remove(self.dataL[tableWidget.currentRow()])
+            tableWidget.removeRow(tableWidget.currentRow())
+
+    def updateList(self, tableWidget):
+        #l = len(self.dataL)
+        #self.dataL.clear()
+        for i in range(tableWidget.rowCount()):
+            self.dataL[i] = [tableWidget.item(i,0).text(), tableWidget.item(i,1).text()]
+
+    def undoChanges(self, tableWidget):
+        with open("TagSample1.csv", mode="r+") as f:
+            data = csv.reader(f)
+            self.dataL = list(data)
+
     def opensecond(self):
         login_page = LoginPage()
         login_page.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
@@ -511,53 +582,29 @@ class IntroWindow(QMainWindow, Form):
             )
 
         login_page.buttonBox.accepted.connect(
-            lambda: [self.listbtn.setFocus(), self.listView.clear(), self.addtolist(),]
+            lambda: [self.listbtn.setFocus(), self.listView.clear(), self.updateList(login_page.tableWidget), self.addtolist(), self.updateTagFile(),]
         )
-        # print(self.videoplayer.position())
-        h = int(self.videoplayer.position() / 1000 // 3600)
-        m = int((self.videoplayer.position() / 1000 - h * 3600) // 60)
-        s = int(
-            ((self.videoplayer.position() / 1000 - h * 3600 - m * 60) % 60) * 100 // 100
+        login_page.buttonBox.rejected.connect(
+            lambda: [self.listbtn.setFocus(), self.undoChanges(login_page.tableWidget),]
         )
-        x = f"{h}:{m}:{s}"
-        # print(x)
         login_page.apply.clicked.connect(
-            lambda: [self.listView.clear(), self.addtolist(),]
+            lambda: [self.updateList(login_page.tableWidget), self.listView.clear(), self.addtolist(),]
         )
         login_page.AddRow.clicked.connect(
-            lambda: [
-                login_page.tableWidget.insertRow(len(self.dataL)),
-                self.dataL.append(["tag", x,]),
-                login_page.tableWidget.setItem(
-                    len(self.dataL) - 1,
-                    0,
-                    QtWidgets.QTableWidgetItem(self.dataL[len(self.dataL) - 1][0]),
-                ),
-                login_page.tableWidget.setItem(
-                    len(self.dataL) - 1,
-                    1,
-                    QtWidgets.QTableWidgetItem(self.dataL[len(self.dataL) - 1][1]),
-                ),
-            ]
+            lambda: [self.insertTag(login_page.tableWidget),]
         )
         login_page.Save.clicked.connect(
             lambda: [
                 login_page.shows(self),
+                self.updateList(login_page.tableWidget),
                 self.listbtn.setFocus(),
                 self.listView.clear(),
                 self.addtolist(),
             ]
         )
 
-        def delrow():
-            if len(self.dataL) > 0:
-                self.dataL.remove(self.dataL[login_page.tableWidget.currentRow()])
-
         login_page.DeleteRow.clicked.connect(
-            lambda: [
-                login_page.tableWidget.removeRow(login_page.tableWidget.currentRow()),
-                delrow(),
-            ]
+            lambda: [self.removeRow(login_page.tableWidget),]
         )
 
         login_page.tableWidget.setHorizontalHeaderLabels(["Tag", "Time"])
