@@ -172,13 +172,25 @@ class IntroWindow(QMainWindow, Form):
         self.dataL = []
         with open("config.txt") as f:
             self.config = f.read()
-        if int(self.config) == 1:
+        if int(self.config) == 11:
             self.theme01()
-        elif int(self.config) == 2:
+            self.farsi()
+        if int(self.config) == 12:
+            self.theme01()
+        elif int(self.config) == 21:
+            self.farsi()
             self.theme02()
-        elif int(self.config) == 3:
+        elif int(self.config) == 22:
+            self.theme02()
+        elif int(self.config) == 31:
+            self.farsi()
             self.theme03()
-        elif int(self.config) == 4:
+        elif int(self.config) == 32:
+            self.theme03()
+        elif int(self.config) == 41:
+            self.farsi()
+            self.theme04()
+        elif int(self.config) == 42:
             self.theme04()
 
     def farsi(self):
@@ -194,6 +206,24 @@ class IntroWindow(QMainWindow, Form):
         self.actionFullscreen.setText("بزرگ/گوچک کردن تصویر")
         self.actionEnglish.setText("انگلیسی")
         self.actionFarsi.setText("فارسی")
+        self.play.setStatusTip("شروع")
+        self.play.setToolTip("شروع")
+        self.stop.setStatusTip("توقف")
+        self.stop.setToolTip("توقف")
+        with open("config.txt") as f:
+            self.config = f.read()
+        if int(self.config) // 10 == 1:
+            with open("config.txt", "w") as f2:
+                f2.write("11")
+        if int(self.config) // 10 == 2:
+            with open("config.txt", "w") as f2:
+                f2.write("21")
+        if int(self.config) // 10 == 3:
+            with open("config.txt", "w") as f2:
+                f2.write("31")
+        if int(self.config) // 10 == 4:
+            with open("config.txt", "w") as f2:
+                f2.write("41")
 
     def english(self):
         self.menuLanguage.setTitle("Language")
@@ -207,6 +237,25 @@ class IntroWindow(QMainWindow, Form):
         self.actionSearch_By_Tag.setText("Search by tag")
         self.actionFullscreen.setText("Fullscreen/Normalscreen")
         self.actionEnglish.setText("English")
+        self.actionFarsi.setText("Farsi")
+        with open("config.txt") as f:
+            self.config = f.read()
+            if self.config == "":
+                with open("config.txt", w) as f2:
+                    f2.write("11")
+                    self.config = "11"
+        if int(self.config) // 10 == 1:
+            with open("config.txt", "w") as f2:
+                f2.write("12")
+        if int(self.config) // 10 == 2:
+            with open("config.txt", "w") as f2:
+                f2.write("22")
+        if int(self.config) // 10 == 3:
+            with open("config.txt", "w") as f2:
+                f2.write("32")
+        if int(self.config) // 10 == 4:
+            with open("config.txt", "w") as f2:
+                f2.write("42")
 
     def moviess(self):
         x = self.filename.split("/")
@@ -684,26 +733,42 @@ class IntroWindow(QMainWindow, Form):
     def theme01(self):
         self.videowidget.setStyleSheet("background-color: #404040")
         self.setStyleSheet("background-color: #A0A0A0")
-        with open("config.txt", "w") as f:
-            f.write("1")
+        if self.theme1.text() == "Theme1":
+            with open("config.txt", "w") as f:
+                f.write("12")
+        else:
+            with open("config.txt", "w") as f:
+                f.write("11")
 
     def theme02(self):
         self.videowidget.setStyleSheet("background-color: #330019")
         self.setStyleSheet("background-color: #990000")
-        with open("config.txt", "w") as f:
-            f.write("2")
+        if self.theme1.text() == "Theme1":
+            with open("config.txt", "w") as f:
+                f.write("22")
+        else:
+            with open("config.txt", "w") as f:
+                f.write("21")
 
     def theme03(self):
         self.videowidget.setStyleSheet("background-color: #35557F")
         self.setStyleSheet("background-color: #003366")
-        with open("config.txt", "w") as f:
-            f.write("3")
+        if self.theme1.text() == "Theme1":
+            with open("config.txt", "w") as f:
+                f.write("32")
+        else:
+            with open("config.txt", "w") as f:
+                f.write("31")
 
     def theme04(self):
         self.videowidget.setStyleSheet("background-color: #00FF00")
         self.setStyleSheet("background-color: #4C9900")
-        with open("config.txt", "w") as f:
-            f.write("4")
+        if self.theme1.text() == "Theme1":
+            with open("config.txt", "w") as f:
+                f.write("42")
+        else:
+            with open("config.txt", "w") as f:
+                f.write("41")
 
 
 if __name__ == "__main__":

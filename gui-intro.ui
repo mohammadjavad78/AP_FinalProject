@@ -258,10 +258,10 @@
                 <item>
                  <widget class="QPushButton" name="skipback">
                   <property name="toolTip">
-                   <string>Skip Backward</string>
+                   <string>prev</string>
                   </property>
                   <property name="statusTip">
-                   <string>Skip Backward</string>
+                   <string>prev</string>
                   </property>
                   <property name="text">
                    <string/>
@@ -284,10 +284,10 @@
                 <item>
                  <widget class="QPushButton" name="skipforward">
                   <property name="toolTip">
-                   <string>Skip Forward</string>
+                   <string>next</string>
                   </property>
                   <property name="statusTip">
-                   <string>Skip Forward</string>
+                   <string>next</string>
                   </property>
                   <property name="text">
                    <string/>
