@@ -1,7 +1,6 @@
 import os
 import sys
 from dateutil.parser import parse
-import pandas as pd
 from datetime import datetime
 from moviepy.editor import VideoFileClip
 from PyQt5 import uic, QtCore, QtWidgets
@@ -14,7 +13,7 @@ from PyQt5.QtWidgets import (
     QFileDialog,
     QStyle,
     QHBoxLayout,
-    QVBoxLayout
+    QVBoxLayout,
 )
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtGui import QIcon, QPalette, QImage
@@ -72,48 +71,6 @@ qss = """
 Form = uic.loadUiType(os.path.join(os.getcwd(), "gui-intro.ui"))[0]
 
 
-# class PlotThread(QtCore.QThread):
-#     def __init__(self, window, x, y):
-#         QtCore.QThread.__init__(self, parent=window)
-#         self.window = window
-#         self.window.preview = Preview(x, y)
-#         # self.preview = preview
-#         frame = QFrame(self.window)
-#         self.window.preview.main.addWidget(frame)
-#         self.window.preview.setWindowFlags(Qt.FramelessWindowHint)
-#         frame.move(x, y)
-#         # frame.resize(112, 112)
-#         # frame.setLineWidth(0.6)
-#         qv = QVBoxLayout(frame)
-#         self.window.preview.videowidget2 = QVideoWidget()
-#         qv.addWidget(self.window.preview.videowidget2)
-#         self.window.preview.videoplayer2 = QMediaPlayer(None, QMediaPlayer.VideoSurface)
-#         self.window.preview.videoplayer2.setVideoOutput(
-#             self.window.preview.videowidget2
-#         )
-#         self.window.preview.videoplayer2.setMedia(
-#             QMediaContent(QUrl.fromLocalFile(self.window.filename))
-#         )
-#         self.window.preview.videoplayer2.play()
-#         self.window.preview.videoplayer2.pause()
-#         self.window.preview.show()
-
-#     def run(self, x, y):
-#         self.window.preview.videoplayer2.setPosition(100000)
-#         self.window.x = 1
-#         while (
-#             x - 10 < win32api.GetCursorPos()[0]
-#             and win32api.GetCursorPos()[0] < x + 10
-#             and y - 10 < win32api.GetCursorPos()[1]
-#             and win32api.GetCursorPos()[1] < y + 10
-#         ):
-#             # print("ssss")
-#             pass
-#         else:
-#             print("close")
-#             self.window.preview.close()
-
-
 class Preview(QMainWindow):
     def __init__(self, x, y):
         super(Preview, self).__init__()
@@ -124,13 +81,6 @@ class Preview(QMainWindow):
 
     def mouseMoveEvent(self, event):
         self.onHoveredleave()
-
-    # def eventFilter(self, source, event):
-    #     if event.type() == QtCore.QEvent.MouseMove:
-    #         if event.buttons() == QtCore.Qt.NoButton:
-    #             print("sssss")
-    #             self.close()
-    #     return super(Window, self).eventFilter(source, event)
 
 
 class LoginPage(QDialog):
@@ -157,15 +107,6 @@ class IntroWindow(QMainWindow, Form):
         self.setPalette(p)
 
         self.setupUi(self)
-
-        # with open("myvid.csv", mode="r+") as f:
-        #     data = csv.reader(f)
-        #     self.dataL = list(data)
-
-        # self.preview = Preview(0, 0)
-        # self.preview.show()
-        # self.preview.close()
-        
 
         self.a = 1
         self.videowidget = QVideoWidget()
@@ -216,7 +157,6 @@ class IntroWindow(QMainWindow, Form):
         self.stop.clicked.connect(self.stopp)
         self.listView.hide()
         self.tolfilm = 0
-        # self.addtolist()
         self.listviewstatus = 0
         self.listbtn.clicked.connect(lambda: self.list())
         self.listView.itemClicked.connect(self.listwidgetclicked)
@@ -235,23 +175,16 @@ class IntroWindow(QMainWindow, Form):
         self.widget.hide()
         self.stop.setEnabled(False)
         self.m = 0
-        # def itemClicked(item):
-        #     print("sassss")
-
-        # self.button = QPushButton("button", self)
-        ####how to hid window flag
-        # self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
-        # self.hide()
-        # self.show()
+        self.dataL = []
         with open("config.txt") as f:
             self.config = f.read()
-        if(int(self.config) == 1):
+        if int(self.config) == 1:
             self.theme01()
-        elif(int(self.config) == 2):
+        elif int(self.config) == 2:
             self.theme02()
-        elif(int(self.config) == 3):
+        elif int(self.config) == 3:
             self.theme03()
-        elif(int(self.config) == 4):
+        elif int(self.config) == 4:
             self.theme04()
 
     def farsi(self):
@@ -266,6 +199,8 @@ class IntroWindow(QMainWindow, Form):
         self.actionSearch_By_Tag.setText("سرچ با تگ")
         self.actionFullscreen.setText("بزرگ/گوچک کردن تصویر")
         self.actionEnglish.setText("انگلیسی")
+        self.actionFarsi.setText("فارسی")
+
     def english(self):
         self.menuLanguage.setTitle("Language")
         self.menuView.setTitle("View")
@@ -281,27 +216,18 @@ class IntroWindow(QMainWindow, Form):
 
     def moviess(self):
         x = self.filename.split("/")
-        # print(X)
         file_name = self.filename[: self.filename.find(x[len(x) - 1])]
         png = ""
         png2 = ""
         folders = os.listdir(file_name + r"/")
-        # j = 0
         for file in folders:
             if file.find(".mp4") > 0:
-                # files = os.listdir(file_name + file)
                 png = png + ";" + file_name + file
                 png2 = ";" + file_name + file + png2
         png = png + ";"
         self.png = png
         png2 = png2 + ";"
         self.png2 = png2
-        #     files = sorted(files, key=len)
-        #     for file in files:
-        #         i, _ = loadImage(file_name + r"/" + folder + r"/" + file)
-        #         i = convertFace(i, efaces)
-        #         png.append([i, file_name + r"/" + folder + r"/" + file])
-        #         j += 1
 
     def hoverleave(self):
         self.widget.hide()
@@ -329,9 +255,6 @@ class IntroWindow(QMainWindow, Form):
     def goto(self):
         x, y = win32api.GetCursorPos()
         if self.filename != "":
-            # self.thread = PlotThread(self, x, y)
-            # self.thread.run(x, y)
-            #         self.window.preview.videoplayer2.setPosition(100000)
             self.videoplayer.setPosition(
                 (x - self.mapToGlobal(self.sliderfilm.pos()).x())
                 / self.sliderfilm.width()
@@ -340,12 +263,8 @@ class IntroWindow(QMainWindow, Form):
             )
 
     def onHovered(self):
-        # print("hovered")
         x, y = win32api.GetCursorPos()
         if self.filename != "":
-            # self.thread = PlotThread(self, x, y)
-            # self.thread.run(x, y)
-            #         self.window.preview.videoplayer2.setPosition(100000)
             if self.listviewstatus % 2 == 1:
                 self.videoplayer3.setPosition(
                     (x - self.mapToGlobal(self.sliderfilm.pos()).x())
@@ -368,7 +287,6 @@ class IntroWindow(QMainWindow, Form):
             self.gotovolume()
         elif obj == self.frames and event.type() == QtCore.QEvent.MouseButtonDblClick:
             if not self.isFullScreen():
-                # self.showFullScreen()
                 self.fulls()
             else:
                 self.unfull()
@@ -425,16 +343,12 @@ class IntroWindow(QMainWindow, Form):
                 self.volume.setValue(self.vvv)
                 self.volume.setEnabled(True)
                 self.videoplayer.setMuted(False)
-            # print(self.videoplayer.isMuted)
-            # self.showNormal()
 
     def screen(self):
         if not self.isFullScreen():
-            # self.showFullScreen()
             self.fulls()
         else:
             self.unfull()
-            # self.showNormal()
 
     # forward media 5s
     def skipforw(self):
@@ -499,10 +413,16 @@ class IntroWindow(QMainWindow, Form):
             self.listView.addItem(self.dataL[i][0] + "->" + self.dataL[i][1])
 
     def updateTagFile(self):
-        fname = self.fileName.split('.')
+        fname = self.fileName.split(".")
         fname = fname[0]
-        with open(fname + ".csv", mode = 'w') as f:
-            writer = csv.writer(f, delimiter = ',', quotechar = '"', quoting = csv.QUOTE_MINIMAL, lineterminator='\n')
+        with open(fname + ".csv", mode="w") as f:
+            writer = csv.writer(
+                f,
+                delimiter=",",
+                quotechar='"',
+                quoting=csv.QUOTE_MINIMAL,
+                lineterminator="\n",
+            )
             for line in self.dataL:
                 writer.writerow(line)
 
@@ -542,32 +462,27 @@ class IntroWindow(QMainWindow, Form):
 
             t.insertRow(i)
             t.setItem(
-                    i,
-                    0,
-                    QtWidgets.QTableWidgetItem(tag),
-                )
+                i, 0, QtWidgets.QTableWidgetItem(tag),
+            )
             t.setItem(
-                    i,
-                    1,
-                    QtWidgets.QTableWidgetItem(tagTime),
-                )
-            #login_page.tableWidget.item(i, 0).setSelected(True)
+                i, 1, QtWidgets.QTableWidgetItem(tagTime),
+            )
             t.editItem(t.item(i, 0))
 
     def removeRow(self, tableWidget):
-            #print(login_page.tableWidget.currentRow())
-            if len(self.dataL) > 0:
-                self.dataL.remove(self.dataL[tableWidget.currentRow()])
-            tableWidget.removeRow(tableWidget.currentRow())
+        if len(self.dataL) > 0:
+            self.dataL.remove(self.dataL[tableWidget.currentRow()])
+        tableWidget.removeRow(tableWidget.currentRow())
 
     def updateList(self, tableWidget):
-        #l = len(self.dataL)
-        #self.dataL.clear()
         for i in range(tableWidget.rowCount()):
-            self.dataL[i] = [tableWidget.item(i,0).text(), tableWidget.item(i,1).text()]
+            self.dataL[i] = [
+                tableWidget.item(i, 0).text(),
+                tableWidget.item(i, 1).text(),
+            ]
 
     def undoChanges(self, tableWidget):
-        fname = self.fileName.split('.')
+        fname = self.fileName.split(".")
         fname = fname[0]
         with open(fname + ".csv", mode="r+") as f:
             data = csv.reader(f)
@@ -586,13 +501,23 @@ class IntroWindow(QMainWindow, Form):
             )
 
         login_page.buttonBox.accepted.connect(
-            lambda: [self.listbtn.setFocus(), self.listView.clear(), self.updateList(login_page.tableWidget), self.addtolist(), self.updateTagFile(),]
+            lambda: [
+                self.listbtn.setFocus(),
+                self.listView.clear(),
+                self.updateList(login_page.tableWidget),
+                self.addtolist(),
+                self.updateTagFile(),
+            ]
         )
         login_page.buttonBox.rejected.connect(
             lambda: [self.listbtn.setFocus(), self.undoChanges(login_page.tableWidget),]
         )
         login_page.apply.clicked.connect(
-            lambda: [self.updateList(login_page.tableWidget), self.listView.clear(), self.addtolist(),]
+            lambda: [
+                self.updateList(login_page.tableWidget),
+                self.listView.clear(),
+                self.addtolist(),
+            ]
         )
         login_page.AddRow.clicked.connect(
             lambda: [self.insertTag(login_page.tableWidget),]
@@ -612,26 +537,47 @@ class IntroWindow(QMainWindow, Form):
         )
 
         login_page.tableWidget.setHorizontalHeaderLabels(["Tag", "Time"])
+        login_page.tableWidget.sortByColumn(1, Qt.AscendingOrder)
+        login_page.pushButton.clicked.connect(
+            lambda: [self.opencsv(login_page), self.do(login_page),]
+        )
+
         login_page.exec_()
+
+    def do(self, login_page):
+        login_page.tableWidget.setRowCount(len(self.dataL))
+        for i in range(len(self.dataL)):
+            login_page.tableWidget.setItem(
+                i, 0, QtWidgets.QTableWidgetItem(self.dataL[i][0])
+            )
+            login_page.tableWidget.setItem(
+                i, 1, QtWidgets.QTableWidgetItem(self.dataL[i][1])
+            )
+
+    def opencsv(self, window):
+        filename, _ = QFileDialog.getOpenFileName(self, "Open csv", filter="*.csv",)
+        if filename != "":
+            self.fileName = filename
+            thename = QFileInfo(filename).fileName()
+            with open(filename, mode="r+") as f:
+                data = csv.reader(f)
+                self.dataL = list(data)
 
     def fulls(self):
         self.decreaseRate.hide()
         self.increaseRate.hide()
         self.centralwidget.setContentsMargins(0, 0, 0, 0)
-        self.play.hide()  ################################################
-        # self.stop.hide()  ################################################
-        self.open.hide()  ################################################
-        self.skipforward.hide()  ################################################
-        self.skipback.hide()  ################################################
-        # self.horizontalSpacer_2.hide()
-        # self.horizontalSpacer.hide()
-        self.label.hide()  ################################################
-        self.label_2.hide()  ################################################
-        self.volume.hide()  ################################################
-        self.menubar.hide()  ################################################################
-        self.sliderfilm.hide()  ################################################
+        self.play.hide()
+        self.open.hide()
+        self.skipforward.hide()
+        self.skipback.hide()
+        self.label.hide()
+        self.label_2.hide()
+        self.volume.hide()
+        self.menubar.hide()
+        self.sliderfilm.hide()
         self.statusBar.hide()
-        self.showFullScreen()  ################################################
+        self.showFullScreen()
         self.listbtn.hide()
         self.widget.hide()
         self.listView.hide()
@@ -646,22 +592,18 @@ class IntroWindow(QMainWindow, Form):
         self.centralwidget.setContentsMargins(10, 10, 10, 10)
         self.decreaseRate.show()
         self.increaseRate.show()
-        self.play.show()  ################################################
-        # self.stop.show()  ################################################
-        self.open.show()  ################################################
-        self.skipforward.show()  ################################################
-        self.skipback.show()  ################################################
-        # self.horizontalSpacer_2.hide()
-        # self.horizontalSpacer.hide()
-        self.label.show()  ################################################
-        self.label_2.show()  ################################################
-        self.volume.show()  ################################################
-        self.menubar.show()  ################################################################
-        self.sliderfilm.show()  ################################################
+        self.play.show()
+        self.open.show()
+        self.skipforward.show()
+        self.skipback.show()
+        self.label.show()
+        self.label_2.show()
+        self.volume.show()
+        self.menubar.show()
+        self.sliderfilm.show()
         self.statusBar.show()
-        self.showNormal()  ################################################
+        self.showNormal()
         self.listbtn.show()
-        # self.listView.show()
 
     ##setting position of film
     def setpos(self, position):
@@ -703,31 +645,26 @@ class IntroWindow(QMainWindow, Form):
     def setvolpos(self, position):
         self.videoplayer.setVolume(position)
 
-    ##stop button
-    # def stopp(self):
-    #     self.stop.setEnabled(False)
-    #     self.play.setText("Start")
-    #     self.videoplayer.stop()
-    #     self.videoplayer.setPosition(0)
-
     ##open button or open from menu bar
     def Loadvideo(self, videoplayer):
         self.a = 0
         filename, _ = QFileDialog.getOpenFileName(
-            self, "Open Video", filter="*.mp4;*.mov;*.wmv;*.webm;*.wmv;*.m4v;*.m4a;*.flv"
+            self,
+            "Open Video",
+            filter="*.mp4;*.mov;*.wmv;*.webm;*.wmv;*.m4v;*.m4a;*.flv",
         )
-        thename = QFileInfo(filename).fileName()
-        self.fileName = thename
-        fname = thename.split('.')
-        fnmae = fname[0]
-        with open(fnmae + ".csv", mode="r+") as f:
-            data = csv.reader(f)
-            self.dataL = list(data)
         self.addtolist()
         if filename != "":
             self.videoplayer.setPosition(0)
             self.filename = filename
             if filename != "":
+                thename = QFileInfo(filename).fileName()
+                self.fileName = thename
+                fname = thename.split(".")
+                fnmae = fname[0]
+                with open(fnmae + ".csv", mode="r+") as f:
+                    data = csv.reader(f)
+                    self.dataL = list(data)
                 clip = VideoFileClip(filename)
                 self.dur = clip.duration
                 self.videoplayer.setMedia(QMediaContent(QUrl.fromLocalFile(filename)))
@@ -736,10 +673,8 @@ class IntroWindow(QMainWindow, Form):
                 clip = VideoFileClip(filename)
                 self.tolfilm = int(clip.duration)
                 title = filename.split("/")
-                # print(title)
                 title = title[len(title) - 1]
-                # print(title)
-                self.setWindowTitle(f"Taz Player openning{title}")
+                self.setWindowTitle(f"Taz Player openning : {title}")
                 self.videoplayer3.play()
                 self.videoplayer3.pause()
                 self.widget.hide()
@@ -763,25 +698,25 @@ class IntroWindow(QMainWindow, Form):
     def theme01(self):
         self.videowidget.setStyleSheet("background-color: #404040")
         self.setStyleSheet("background-color: #A0A0A0")
-        with open("config.txt", 'w') as f:
+        with open("config.txt", "w") as f:
             f.write("1")
 
     def theme02(self):
         self.videowidget.setStyleSheet("background-color: #330019")
         self.setStyleSheet("background-color: #990000")
-        with open("config.txt", 'w') as f:
+        with open("config.txt", "w") as f:
             f.write("2")
 
     def theme03(self):
         self.videowidget.setStyleSheet("background-color: #35557F")
         self.setStyleSheet("background-color: #003366")
-        with open("config.txt", 'w') as f:
+        with open("config.txt", "w") as f:
             f.write("3")
 
     def theme04(self):
         self.videowidget.setStyleSheet("background-color: #00FF00")
         self.setStyleSheet("background-color: #4C9900")
-        with open("config.txt", 'w') as f:
+        with open("config.txt", "w") as f:
             f.write("4")
 
 
