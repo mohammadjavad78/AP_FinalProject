@@ -1,29 +1,23 @@
 import os
 import sys
-from dateutil.parser import parse
 from datetime import datetime
 from moviepy.editor import VideoFileClip
-from PyQt5 import uic, QtCore, QtWidgets
+from PyQt5 import uic, QtCore
 from PyQt5.QtWidgets import (
     QApplication,
-    QFrame,
     QDialog,
     QMainWindow,
-    QPushButton,
     QFileDialog,
     QStyle,
-    QHBoxLayout,
-    QVBoxLayout,
+    QTableWidgetItem,
 )
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from PyQt5.QtGui import QIcon, QPalette, QImage
+from PyQt5.QtGui import QIcon, QPalette
 from PyQt5.QtCore import QUrl, Qt, QFileInfo
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.uic import loadUi
 import win32api
 import csv
-import time
-from moviepy.editor import VideoFileClip
 
 
 qss = """
@@ -462,10 +456,10 @@ class IntroWindow(QMainWindow, Form):
 
             t.insertRow(i)
             t.setItem(
-                i, 0, QtWidgets.QTableWidgetItem(tag),
+                i, 0, QTableWidgetItem(tag),
             )
             t.setItem(
-                i, 1, QtWidgets.QTableWidgetItem(tagTime),
+                i, 1, QTableWidgetItem(tagTime),
             )
             t.editItem(t.item(i, 0))
 
@@ -493,12 +487,8 @@ class IntroWindow(QMainWindow, Form):
         login_page.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
         login_page.tableWidget.setRowCount(len(self.dataL))
         for i in range(len(self.dataL)):
-            login_page.tableWidget.setItem(
-                i, 0, QtWidgets.QTableWidgetItem(self.dataL[i][0])
-            )
-            login_page.tableWidget.setItem(
-                i, 1, QtWidgets.QTableWidgetItem(self.dataL[i][1])
-            )
+            login_page.tableWidget.setItem(i, 0, QTableWidgetItem(self.dataL[i][0]))
+            login_page.tableWidget.setItem(i, 1, QTableWidgetItem(self.dataL[i][1]))
 
         login_page.buttonBox.accepted.connect(
             lambda: [
@@ -547,12 +537,8 @@ class IntroWindow(QMainWindow, Form):
     def do(self, login_page):
         login_page.tableWidget.setRowCount(len(self.dataL))
         for i in range(len(self.dataL)):
-            login_page.tableWidget.setItem(
-                i, 0, QtWidgets.QTableWidgetItem(self.dataL[i][0])
-            )
-            login_page.tableWidget.setItem(
-                i, 1, QtWidgets.QTableWidgetItem(self.dataL[i][1])
-            )
+            login_page.tableWidget.setItem(i, 0, QTableWidgetItem(self.dataL[i][0]))
+            login_page.tableWidget.setItem(i, 1, QTableWidgetItem(self.dataL[i][1]))
 
     def opencsv(self, window):
         filename, _ = QFileDialog.getOpenFileName(self, "Open csv", filter="*.csv",)
