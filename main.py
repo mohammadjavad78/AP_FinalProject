@@ -178,20 +178,24 @@ class IntroWindow(QMainWindow, Form):
             self.farsi()
         if int(self.config) == 12:
             self.theme01()
+            self.english()
         elif int(self.config) == 21:
             self.farsi()
             self.theme02()
         elif int(self.config) == 22:
+            self.english()
             self.theme02()
         elif int(self.config) == 31:
             self.farsi()
             self.theme03()
         elif int(self.config) == 32:
+            self.english()
             self.theme03()
         elif int(self.config) == 41:
             self.farsi()
             self.theme04()
         elif int(self.config) == 42:
+            self.english()
             self.theme04()
 
     def farsi(self):
@@ -224,7 +228,9 @@ class IntroWindow(QMainWindow, Form):
         self.volume.setStatusTip("صدا")
         self.volume.setToolTip("صدا")
         self.listbtn.setStatusTip("دسترسی آسان")
-        self.listbtn.setToolTip("پنلی شامل تگ ها و پنجره ای برای پیش نمایش را نمایان/پنهان میکند که با کلیک کردن بر روی هر کدام ویدیو به آن لحظه میرود")
+        self.listbtn.setToolTip(
+            "پنلی شامل تگ ها و پنجره ای برای پیش نمایش را نمایان/پنهان میکند که با کلیک کردن بر روی هر کدام ویدیو به آن لحظه میرود"
+        )
         with open("config.txt") as f:
             self.config = f.read()
         if int(self.config) // 10 == 1:
@@ -270,7 +276,9 @@ class IntroWindow(QMainWindow, Form):
         self.volume.setStatusTip("Volume")
         self.volume.setToolTip("Volume")
         self.listbtn.setStatusTip("Easy Access")
-        self.listbtn.setToolTip("Shows/Hides a panel for the tags that can be clicked on to take the video to its moment and also a preview window")
+        self.listbtn.setToolTip(
+            "Shows/Hides a panel for the tags that can be clicked on to take the video to its moment and also a preview window"
+        )
         with open("config.txt") as f:
             self.config = f.read()
             if self.config == "":
@@ -484,7 +492,7 @@ class IntroWindow(QMainWindow, Form):
             x = self.videoplayer.playbackRate()
         self.videoplayer.setPlaybackRate(x - 0.25)
 
-# Handling Tags
+    # Handling Tags
     def fillListView(self):
         for i in range(len(self.dataL)):
             self.listView.addItem(self.dataL[i][0] + "->" + self.dataL[i][1])
@@ -571,7 +579,9 @@ class IntroWindow(QMainWindow, Form):
             tableWidget.setItem(i, 1, QTableWidgetItem(self.dataL[i][1]))
 
     def openTagFile(self):
-        filename, _ = QFileDialog.getOpenFileName(self, "Open Tag File", filter="*.csv",)
+        filename, _ = QFileDialog.getOpenFileName(
+            self, "Open Tag File", filter="*.csv",
+        )
         if filename != "":
             self.fileName = filename
             with open(filename, mode="r+") as f:
@@ -592,7 +602,6 @@ class IntroWindow(QMainWindow, Form):
             login_page.tableWidget.setHorizontalHeaderLabels(["تگ", "زمان"])
         else:
             login_page.tableWidget.setHorizontalHeaderLabels(["Tag", "Time"])
-
 
         self.fillTable(login_page.tableWidget)
 
@@ -637,7 +646,12 @@ class IntroWindow(QMainWindow, Form):
         )
 
         login_page.OpenTagButton.clicked.connect(
-            lambda: [self.openTagFile(), self.fillTable(login_page.tableWidget),]
+            lambda: [
+                self.openTagFile(),
+                self.fillTable(login_page.tableWidget),
+                self.listView.clear(),
+                self.fillListView(),
+            ]
         )
 
         login_page.tableWidget.sortByColumn(1, Qt.AscendingOrder)
@@ -646,9 +660,9 @@ class IntroWindow(QMainWindow, Form):
         # else:
         #     login_page.tableWidget.setHorizontalHeaderLabels(["تگ", "زمان"])
 
-
         login_page.exec_()
-# End of Handling Tags
+
+    # End of Handling Tags
 
     def fulls(self):
         self.decreaseRate.hide()
@@ -751,7 +765,8 @@ class IntroWindow(QMainWindow, Form):
                 with open(fnmae + ".csv", mode="r+") as f:
                     data = csv.reader(f)
                     self.dataL = list(data)
-                self.fillListView()
+                    self.listView.clear(),
+                    self.fillListView()
                 clip = VideoFileClip(filename)
                 self.dur = clip.duration
                 self.videoplayer.setMedia(QMediaContent(QUrl.fromLocalFile(filename)))
