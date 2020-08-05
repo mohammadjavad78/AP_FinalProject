@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (
     QFileDialog,
     QStyle,
     QTableWidgetItem,
+    QDialogButtonBox,
 )
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtGui import QIcon, QPalette
@@ -195,21 +196,35 @@ class IntroWindow(QMainWindow, Form):
 
     def farsi(self):
         self.menuLanguage.setTitle("زبان")
-        self.menuView.setTitle("نگاره")
+        self.menuView.setTitle("نمایش")
         self.theme1.setText("تم ۱")
         self.theme2.setText("تم ۲")
         self.theme3.setText("تم ۳")
         self.theme4.setText("تم ۴")
         self.menuFile.setTitle("فایل")
-        self.actionOpen.setText("باز کردن")
-        self.actionSearch_By_Tag.setText("سرچ با تگ")
-        self.actionFullscreen.setText("بزرگ/گوچک کردن تصویر")
+        self.actionOpen.setText("باز کردن ویدیو")
+        self.actionSearch_By_Tag.setText("پنل تگ ها")
+        self.actionFullscreen.setText("تمام صفحه")
         self.actionEnglish.setText("انگلیسی")
         self.actionFarsi.setText("فارسی")
-        self.play.setStatusTip("شروع")
-        self.play.setToolTip("شروع")
+        self.decreaseRate.setStatusTip("کاهش سرعت")
+        self.decreaseRate.setToolTip("کاهش سرعت")
+        self.increaseRate.setStatusTip("افزایش سرعت")
+        self.increaseRate.setToolTip("افزایش سرعت")
+        self.open.setStatusTip("باز کردن ویدیو")
+        self.open.setToolTip("باز کردن ویدیو")
         self.stop.setStatusTip("توقف")
         self.stop.setToolTip("توقف")
+        self.skipback.setStatusTip("عقب رفتن")
+        self.skipback.setToolTip("عقب رفتن")
+        self.play.setStatusTip("شروع/ایست")
+        self.play.setToolTip("شروع/ایست")
+        self.skipforward.setStatusTip("جلو رفتن")
+        self.skipforward.setToolTip("جلو رفتن")
+        self.volume.setStatusTip("صدا")
+        self.volume.setToolTip("صدا")
+        self.listbtn.setStatusTip("دسترسی آسان")
+        self.listbtn.setToolTip("پنلی شامل تگ ها و پنجره ای برای پیش نمایش را نمایان/پنهان میکند که با کلیک کردن بر روی هر کدام ویدیو به آن لحظه میرود")
         with open("config.txt") as f:
             self.config = f.read()
         if int(self.config) // 10 == 1:
@@ -233,11 +248,29 @@ class IntroWindow(QMainWindow, Form):
         self.theme3.setText("Theme3")
         self.theme4.setText("Theme4")
         self.menuFile.setTitle("File")
-        self.actionOpen.setText("Open")
-        self.actionSearch_By_Tag.setText("Search by tag")
-        self.actionFullscreen.setText("Fullscreen/Normalscreen")
+        self.actionOpen.setText("Open Video")
+        self.actionSearch_By_Tag.setText("Tags Panel")
+        self.actionFullscreen.setText("Fullscreen")
         self.actionEnglish.setText("English")
-        self.actionFarsi.setText("Farsi")
+        self.actionFarsi.setText("Persian")
+        self.decreaseRate.setStatusTip("Decrease Play Speed")
+        self.decreaseRate.setToolTip("Decrease Play Speed")
+        self.increaseRate.setStatusTip("Increase Play Speed")
+        self.increaseRate.setToolTip("Increase Play Speed")
+        self.open.setStatusTip("Open Video")
+        self.open.setToolTip("Open Video")
+        self.stop.setStatusTip("Stop")
+        self.stop.setToolTip("Stop")
+        self.skipback.setStatusTip("Previous")
+        self.skipback.setToolTip("Previous")
+        self.play.setStatusTip("Play/Pause")
+        self.play.setToolTip("Play/Pause")
+        self.skipforward.setStatusTip("Next")
+        self.skipforward.setToolTip("Next")
+        self.volume.setStatusTip("Volume")
+        self.volume.setToolTip("Volume")
+        self.listbtn.setStatusTip("Easy Access")
+        self.listbtn.setToolTip("Shows/Hides a panel for the tags that can be clicked on to take the video to its moment and also a preview window")
         with open("config.txt") as f:
             self.config = f.read()
             if self.config == "":
@@ -276,7 +309,7 @@ class IntroWindow(QMainWindow, Form):
         self.widget.hide()
 
     def gotovolume(self):
-        x, y = win32api.GetCursorPos()
+        x, _ = win32api.GetCursorPos()
         self.videoplayer.setVolume(
             int(
                 (x - self.mapToGlobal(self.volume.pos()).x())
@@ -296,7 +329,7 @@ class IntroWindow(QMainWindow, Form):
             self.videoplayer.setMuted(False)
 
     def goto(self):
-        x, y = win32api.GetCursorPos()
+        x, _ = win32api.GetCursorPos()
         if self.filename != "":
             self.videoplayer.setPosition(
                 (x - self.mapToGlobal(self.sliderfilm.pos()).x())
@@ -306,7 +339,7 @@ class IntroWindow(QMainWindow, Form):
             )
 
     def onHovered(self):
-        x, y = win32api.GetCursorPos()
+        x, _ = win32api.GetCursorPos()
         if self.filename != "":
             if self.listviewstatus % 2 == 1:
                 self.videoplayer3.setPosition(
@@ -451,7 +484,8 @@ class IntroWindow(QMainWindow, Form):
             x = self.videoplayer.playbackRate()
         self.videoplayer.setPlaybackRate(x - 0.25)
 
-    def addtolist(self):
+# Handling Tags
+    def fillListView(self):
         for i in range(len(self.dataL)):
             self.listView.addItem(self.dataL[i][0] + "->" + self.dataL[i][1])
 
@@ -497,7 +531,6 @@ class IntroWindow(QMainWindow, Form):
 
         if i < l:
             if tagTime == self.dataL[i][1]:
-                self.dataL[i] = [tag, tagTime]
                 flag = True
 
         if not flag:
@@ -524,50 +557,78 @@ class IntroWindow(QMainWindow, Form):
                 tableWidget.item(i, 1).text(),
             ]
 
-    def undoChanges(self, tableWidget):
+    def undoChanges(self):
         fname = self.fileName.split(".")
         fname = fname[0]
         with open(fname + ".csv", mode="r+") as f:
             data = csv.reader(f)
             self.dataL = list(data)
 
+    def fillTable(self, tableWidget):
+        tableWidget.setRowCount(len(self.dataL))
+        for i in range(len(self.dataL)):
+            tableWidget.setItem(i, 0, QTableWidgetItem(self.dataL[i][0]))
+            tableWidget.setItem(i, 1, QTableWidgetItem(self.dataL[i][1]))
+
+    def openTagFile(self):
+        filename, _ = QFileDialog.getOpenFileName(self, "Open Tag File", filter="*.csv",)
+        if filename != "":
+            self.fileName = filename
+            with open(filename, mode="r+") as f:
+                data = csv.reader(f)
+                self.dataL = list(data)
+
     def opensecond(self):
         login_page = LoginPage()
         login_page.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
-        login_page.tableWidget.setRowCount(len(self.dataL))
-        for i in range(len(self.dataL)):
-            login_page.tableWidget.setItem(i, 0, QTableWidgetItem(self.dataL[i][0]))
-            login_page.tableWidget.setItem(i, 1, QTableWidgetItem(self.dataL[i][1]))
+        if int(self.config) % 10 == 1:
+            login_page.Save.setText("برو به")
+            login_page.apply.setText("اعمال تغییرات")
+            login_page.buttonBox.button(QDialogButtonBox.Ok).setText("تایید")
+            login_page.buttonBox.button(QDialogButtonBox.Cancel).setText("انصراف")
+            login_page.AddRow.setText("افزودن تگ")
+            login_page.DeleteRow.setText("حذف تگ")
+            login_page.OpenTagButton.setText("باز کردن فایل تگ")
+            login_page.tableWidget.setHorizontalHeaderLabels(["تگ", "زمان"])
+        else:
+            login_page.tableWidget.setHorizontalHeaderLabels(["Tag", "Time"])
+
+
+        self.fillTable(login_page.tableWidget)
 
         login_page.buttonBox.accepted.connect(
             lambda: [
+                self.updateList(login_page.tableWidget),
                 self.listbtn.setFocus(),
                 self.listView.clear(),
-                self.updateList(login_page.tableWidget),
-                self.addtolist(),
+                self.fillListView(),
                 self.updateTagFile(),
             ]
         )
+
         login_page.buttonBox.rejected.connect(
-            lambda: [self.listbtn.setFocus(), self.undoChanges(login_page.tableWidget),]
+            lambda: [self.listbtn.setFocus(), self.undoChanges(),]
         )
+
         login_page.apply.clicked.connect(
             lambda: [
                 self.updateList(login_page.tableWidget),
                 self.listView.clear(),
-                self.addtolist(),
+                self.fillListView(),
             ]
         )
+
         login_page.AddRow.clicked.connect(
             lambda: [self.insertTag(login_page.tableWidget),]
         )
+
         login_page.Save.clicked.connect(
             lambda: [
                 login_page.shows(self),
                 self.updateList(login_page.tableWidget),
                 self.listbtn.setFocus(),
                 self.listView.clear(),
-                self.addtolist(),
+                self.fillListView(),
             ]
         )
 
@@ -575,28 +636,19 @@ class IntroWindow(QMainWindow, Form):
             lambda: [self.removeRow(login_page.tableWidget),]
         )
 
-        login_page.tableWidget.setHorizontalHeaderLabels(["Tag", "Time"])
-        login_page.tableWidget.sortByColumn(1, Qt.AscendingOrder)
-        login_page.pushButton.clicked.connect(
-            lambda: [self.opencsv(login_page), self.do(login_page),]
+        login_page.OpenTagButton.clicked.connect(
+            lambda: [self.openTagFile(), self.fillTable(login_page.tableWidget),]
         )
 
+        login_page.tableWidget.sortByColumn(1, Qt.AscendingOrder)
+        # if int(self.config) % 10 == 2:
+        #     login_page.tableWidget.setHorizontalHeaderLabels(["Tag", "Time"])
+        # else:
+        #     login_page.tableWidget.setHorizontalHeaderLabels(["تگ", "زمان"])
+
+
         login_page.exec_()
-
-    def do(self, login_page):
-        login_page.tableWidget.setRowCount(len(self.dataL))
-        for i in range(len(self.dataL)):
-            login_page.tableWidget.setItem(i, 0, QTableWidgetItem(self.dataL[i][0]))
-            login_page.tableWidget.setItem(i, 1, QTableWidgetItem(self.dataL[i][1]))
-
-    def opencsv(self, window):
-        filename, _ = QFileDialog.getOpenFileName(self, "Open csv", filter="*.csv",)
-        if filename != "":
-            self.fileName = filename
-            thename = QFileInfo(filename).fileName()
-            with open(filename, mode="r+") as f:
-                data = csv.reader(f)
-                self.dataL = list(data)
+# End of Handling Tags
 
     def fulls(self):
         self.decreaseRate.hide()
@@ -688,7 +740,6 @@ class IntroWindow(QMainWindow, Form):
             "Open Video",
             filter="*.mp4;*.mov;*.wmv;*.webm;*.wmv;*.m4v;*.m4a;*.flv",
         )
-        self.addtolist()
         if filename != "":
             self.videoplayer.setPosition(0)
             self.filename = filename
@@ -700,6 +751,7 @@ class IntroWindow(QMainWindow, Form):
                 with open(fnmae + ".csv", mode="r+") as f:
                     data = csv.reader(f)
                     self.dataL = list(data)
+                self.fillListView()
                 clip = VideoFileClip(filename)
                 self.dur = clip.duration
                 self.videoplayer.setMedia(QMediaContent(QUrl.fromLocalFile(filename)))

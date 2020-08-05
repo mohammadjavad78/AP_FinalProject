@@ -111,14 +111,14 @@
      <item>
       <widget class="QPushButton" name="Save">
        <property name="text">
-        <string>GOTO</string>
+        <string>Go To</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="apply">
        <property name="text">
-        <string>APPLY</string>
+        <string>Apply</string>
        </property>
       </widget>
      </item>
@@ -159,21 +159,21 @@
      <item>
       <widget class="QPushButton" name="AddRow">
        <property name="text">
-        <string>Add Row</string>
+        <string>Add Tag</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="DeleteRow">
        <property name="text">
-        <string>Delete Row</string>
+        <string>Delete Tag</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="OpenTagButton">
        <property name="text">
-        <string>Open .csv</string>
+        <string>Open Tag File</string>
        </property>
       </widget>
      </item>

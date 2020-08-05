@@ -258,10 +258,10 @@
                 <item>
                  <widget class="QPushButton" name="skipback">
                   <property name="toolTip">
-                   <string>prev</string>
+                   <string>Previous</string>
                   </property>
                   <property name="statusTip">
-                   <string>prev</string>
+                   <string>Previous</string>
                   </property>
                   <property name="text">
                    <string/>
@@ -284,10 +284,10 @@
                 <item>
                  <widget class="QPushButton" name="skipforward">
                   <property name="toolTip">
-                   <string>next</string>
+                   <string>Next</string>
                   </property>
                   <property name="statusTip">
-                   <string>next</string>
+                   <string>Next</string>
                   </property>
                   <property name="text">
                    <string/>
@@ -362,13 +362,13 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>With this you can easily handle to jump from one part of video to another</string>
+              <string>Shows/Hides a panel for the tags that can be clicked on to take the video to its moment and also a preview window</string>
              </property>
              <property name="statusTip">
-              <string>Easy Acess</string>
+              <string>Easy Access</string>
              </property>
              <property name="whatsThis">
-              <string>With this you can handle to easy jump from one part of video to another</string>
+              <string>Shows/Hides a panel for the tags that can be clicked on to take the video to its moment and also a preview window</string>
              </property>
              <property name="text">
               <string>^</string>
@@ -504,17 +504,17 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>Open Video</string>
    </property>
   </action>
   <action name="actionSearch_By_Tag">
    <property name="text">
-    <string>Search By Tag</string>
+    <string>Tags Panel</string>
    </property>
   </action>
   <action name="actionFullscreen">
    <property name="text">
-    <string>Fullscreen/normalscreen</string>
+    <string>Fullscreen</string>
    </property>
   </action>
   <action name="theme1">
@@ -542,7 +542,7 @@
   </action>
   <action name="actionFarsi">
    <property name="text">
-    <string>Farsi</string>
+    <string>Persian</string>
    </property>
   </action>
   <action name="actionEnglish">
