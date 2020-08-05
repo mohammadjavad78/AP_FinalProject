@@ -1,7 +1,9 @@
 import os
 import sys
 from datetime import datetime
-from moviepy.editor import VideoFileClip
+from moviepy.video.io.VideoFileClip import VideoFileClip
+from moviepy.video.VideoClip import ImageClip
+from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
 from PyQt5 import uic, QtCore
 from PyQt5.QtWidgets import (
     QApplication,
@@ -762,11 +764,12 @@ class IntroWindow(QMainWindow, Form):
                 self.fileName = thename
                 fname = thename.split(".")
                 fnmae = fname[0]
-                with open(fnmae + ".csv", mode="r+") as f:
-                    data = csv.reader(f)
-                    self.dataL = list(data)
-                    self.listView.clear(),
-                    self.fillListView()
+                if os.path.isfile(fnmae + ".csv"):
+                    with open(fnmae + ".csv", mode="r+") as f:
+                        data = csv.reader(f)
+                        self.dataL = list(data)
+                        self.listView.clear(),
+                        self.fillListView()
                 clip = VideoFileClip(filename)
                 self.dur = clip.duration
                 self.videoplayer.setMedia(QMediaContent(QUrl.fromLocalFile(filename)))
